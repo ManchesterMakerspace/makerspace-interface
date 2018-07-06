@@ -1,16 +1,9 @@
 require 'csv'
 
 class VirtualAccountant::TransactionParser
-  attr_accessor :current_category, :transaction_json, :group_by
+  attr_accessor :current_category, :transaction_json
 
-  GROUP_BY_OPTIONS = {
-    Month: :month,
-    Week: :week
-  }
-
-  def self.group_by_options
-    return GROUP_BY_OPTIONS
-  end
+  DATA_STARTS_AT_ROW=6
 
   def initialize
     super
@@ -19,44 +12,32 @@ class VirtualAccountant::TransactionParser
 
   def parse_general_ledger(
       input_path,
-      output_file="#{Rails.root}/dump/report_#{Time.now.strftime('%m-%d-%Y')}.csv",
-      group_by=:month
+      output_file="#{Rails.root}/dump/report_#{Time.now.strftime('%m-%d-%Y')}.csv"
     )
-    self.group_by = group_by
-    skip_to = 6
     CSV.read(input_path, encoding: "UTF-16", col_sep: "\t").each.with_index do |row, index|
-      next if index < skip_to
+      next if index < DATA_STARTS_AT_ROW
       parse_row(row)
     end
     write_chart_csv(output_file)
   end
 
   def parse_row(row)
-    col_one, col_two, col_three, col_four = row #date, description, credit, debit
-    begin
-       date = Date.parse(col_one) unless col_one.nil?
-       return if date.nil?
-       transactions = self.transaction_json[self.current_category][:transactions]
-       if self.group_by == GROUP_BY_OPTIONS[:Month]
-         transaction_key = Date.new(date.year, date.month)
-       elsif self.group_by == GROUP_BY_OPTIONS[:Week]
-         transaction_key = date.sunday
-       end
-       current_total = transactions[transaction_key] || 0
-       current_total += calc_transaction_total(col_three, col_four)
-       transactions[transaction_key] = current_total
-
-    rescue ArgumentError
-      if col_one !~ /^(Net|Total)/
-        self.current_category = col_one
-        add_new_category(row)
-      elsif col_one =~ Regexp.new("^(Total #{current_category})")
-        self.transaction_json[self.current_category]["Total"] = calc_transaction_total(col_three, col_four)
-      elsif col_one == "Net Movement"
-        self.transaction_json[self.current_category]["Net"] = col_four
+    transaction_hash = VirtualAccountant::Transaction.row_to_transaction_hash(row)
+    transaction = VirtualAccountant::Transaction.new(transaction_hash)
+    if transaction.valid?
+      transactions = self.transaction_json[self.current_category.name][:transactions]
+      transactions.push(transaction)
+    else
+      record_description, *, credit_amt, debit_amt = row
+      if record_description !~ /^(Net|Total)/
+        self.current_category = VirtualAccountant::Category.new(name: record_description)
+        add_new_category
+      elsif record_description =~ Regexp.new("^(Total #{self.current_category.name})")
+        self.current_category.total = calc_transaction_total(credit_amt, debit_amt)
+      elsif record_description == "Net Movement"
+        self.current_category.net = debit_amt
       end
     end
-    self.parse_description(col_two)
   end
 
   def from_currency(string_num)
@@ -76,28 +57,15 @@ class VirtualAccountant::TransactionParser
     end
   end
 
-  def determine_transaction_type(description)
-    if /^.+( to)/ === description
-      transfer_to(description)
-    elsif /^.+( from)/ === description
-      transfer_from(description)
-    else
-      trans_type = description.split(" ").map { |p| p.strip }.compact.first
-      throw "Invalid type #{description}" unless /(Expense|Income)/ === trans_type
-      # Set object to expense or income
-    end
-  end
-
   def transfer_to(description)
   end
 
   def transfer_from(description)
   end
 
-  def add_new_category(row)
-    current_category, description, credit, debit = row
-    self.transaction_json[current_category] = {
-      transactions: {},
+  def add_new_category
+    self.transaction_json[self.current_category.name] = {
+      transactions: [],
     }
   end
 

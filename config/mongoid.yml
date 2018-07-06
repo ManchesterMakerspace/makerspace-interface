@@ -3,8 +3,8 @@ development:
   clients:
     default:
       uri: <%=ENV['MLAB_URI']%>
-    # payments:
-    #   uri: <%=ENV['MLAB_URI']%>
+    accounting:
+      uri: <%=ENV['ACCOUNTING_MLAB_URI']%>
 
   # Configure Mongoid specific options. (optional)
   options:
@@ -40,11 +40,15 @@ production:
   clients:
       default:
         uri: <%=ENV['MLAB_URI']%>
+      accounting:
+        uri: <%=ENV['ACCOUNTING_MLAB_URI']%>
   options:
     raise_not_found_error: false
 test:
   clients:
     default:
       uri: <%=ENV['MLAB_URI']%>
+    accounting:
+      uri: <%=ENV['ACCOUNTING_MLAB_URI']%>
   options:
     raise_not_found_error: false
