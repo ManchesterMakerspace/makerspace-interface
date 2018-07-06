@@ -1,12 +1,11 @@
-require_relative 'treasurer_utils'
 require 'csv'
-require 'json'
 
-class TranscationParser < TreasurerUtils
+class VirtualAccountant::TransactionParser
   attr_accessor :current_category, :transaction_json, :group_by
+
   GROUP_BY_OPTIONS = {
-    Month: "month",
-    Week: "week"
+    Month: :month,
+    Week: :week
   }
 
   def self.group_by_options
@@ -14,10 +13,15 @@ class TranscationParser < TreasurerUtils
   end
 
   def initialize
+    super
     self.transaction_json = {}
   end
 
-  def parse_general_ledger(input_path, output_file, group_by)
+  def parse_general_ledger(
+      input_path,
+      output_file="#{Rails.root}/dump/report_#{Time.now.strftime('%m-%d-%Y')}.csv",
+      group_by=:month
+    )
     self.group_by = group_by
     skip_to = 6
     CSV.read(input_path, encoding: "UTF-16", col_sep: "\t").each.with_index do |row, index|
@@ -38,8 +42,7 @@ class TranscationParser < TreasurerUtils
        elsif self.group_by == GROUP_BY_OPTIONS[:Week]
          transaction_key = date.sunday
        end
-       current_total = transactions[transaction_key]
-       current_total = 0 if current_total.nil?
+       current_total = transactions[transaction_key] || 0
        current_total += calc_transaction_total(col_three, col_four)
        transactions[transaction_key] = current_total
 
@@ -110,12 +113,8 @@ class TranscationParser < TreasurerUtils
           trans_obj[:transactions].each do |transaction|
             key, value = transaction
             if key.class == Date then
-              puts value
-              puts key
               csv << [key.strftime("%m/%d/%Y"), value]
             else
-              puts value
-              puts key
               csv << [key, value]
             end
           end
