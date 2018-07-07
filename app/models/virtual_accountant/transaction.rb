@@ -1,7 +1,6 @@
 class VirtualAccountant::Transaction
   include Mongoid::Document
   store_in collection: "transactions", database: "makerspace_accounting", client: "accounting"
-  after_create :determine_transaction_type
 
   attr_accessor :date
 
@@ -12,10 +11,11 @@ class VirtualAccountant::Transaction
   field :type, type: String
   field :import_date, type: Date, default: Date.today
 
-  # belongs_to :transaction_category, class_name: "VirtualAccountant::Category"
+  belongs_to :transaction_category, class_name: "VirtualAccountant::Category", optional: true
   # belongs_to :vendor, class_name: "VirtualAccountant::Vendor", optional: true
 
   validate :date_is_valid
+  # validate :transaction_type_is_valid
 
   def self.row_to_transaction_hash(csv_row)
     date, description, credit, debit = csv_row
@@ -25,6 +25,10 @@ class VirtualAccountant::Transaction
   private
   def date_is_valid
     errors.add(:transaction_date, "Invalid date string") unless convert_transaction_date
+  end
+
+  def transaction_type_is_valid
+    errors.add(:type, "Unable to parse transaction type") unless determine_transaction_type
   end
 
   def convert_transaction_date
@@ -37,14 +41,18 @@ class VirtualAccountant::Transaction
   end
 
   def determine_transaction_type
-    if /^.+( to)/ === self.description
+    transaction_string, * = self.description.split(" - ", 2) unless self.description.nil?
+    return false if transaction_string.nil?
+
+    transaction_string.strip!
+    if /^.+( to)/ === transaction_string
       self.type = :transfer_to
-    elsif /^.+( from)/ === self.description
+    elsif /^.+( from)/ === transaction_string
       self.type = :transfer_from
     else
-      trans_type = self.description.split(" ").map { |p| p.strip }.compact.first
-      throw "Invalid type #{self.description}" unless /(Expense|Income)/ === trans_type
-      # Set object to expense or income
+      trans_type = transaction_string.split(" ").map { |p| p.strip }.compact.first
+      return false unless /(Expense|Income)/ === trans_type
+      self.type = trans_type === "Expense" ? :expense : :income
     end
   end
 end
