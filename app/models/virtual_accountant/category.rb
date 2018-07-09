@@ -19,12 +19,23 @@ class VirtualAccountant::Category
   validates :reported_net, presence: true
   validates :transaction_type, presence: true
 
+  BANK_ACCOUNNTS = [
+    "Cash on Hand",
+    "Paypal",
+    "Bluebird",
+    "Northway Bank"
+  ]
+
   def self.start_new_category?(record_description)
     record_description !~ /^(Net|Total)/
   end
 
   def self.end_current_category?(record_description)
     record_description == "Net Movement"
+  end
+
+  def self.find_by_type(type)
+    self.where(transaction_type: type).not_in(name: BANK_ACCOUNNTS)
   end
 
   def determine_transaction_type

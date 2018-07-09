@@ -3,18 +3,9 @@ app.component('incomeChartComponent', {
   controller: incomeChartController,
   controllerAs: "incomeChartCtrl",
   bindings: {
-    categories: '<'
+    income: '<'
   }
 });
-
-var CHART_OPTIONS = {
-  netDollars: {
-    title: "Total Monthly Income by Source",
-  },
-  averageDollars: {
-    title: "Average Monthly Income by Source",
-  },
-};
 
 function incomeChartController() {
   var incomeChartCtrl = this;
@@ -23,52 +14,53 @@ function incomeChartController() {
     incomeChartCtrl.averageDollarsData = [[]];
     incomeChartCtrl.chartLabels = [];
     incomeChartCtrl.selectedIndex = 0;
+    incomeChartCtrl.chartOptions = {
+      netDollars: {
+        title: "Total Monthly Income by Source",
+      },
+      averageDollars: {
+        title: "Average Monthly Income by Source",
+      },
+    };
 
-    incomeChartCtrl.parseCategories(incomeChartCtrl.categories);
+    if (!incomeChartCtrl.income.isRequesting) {
+      incomeChartCtrl.parseCategories(incomeChartCtrl.income.data);
+    }
   };
 
   incomeChartCtrl.$onChanges = function () {
-    incomeChartCtrl.parseCategories(incomeChartCtrl.categories);
+    if (!incomeChartCtrl.income.isRequesting) {
+      incomeChartCtrl.parseCategories(incomeChartCtrl.income.data);
+    }
   };
 
   incomeChartCtrl.parseCategories = function (categories) {
+    categories = categories.sort(function (a, b) {
+      return b.total_credit - a.total_credit;
+    });
     if (Array.isArray(categories)) {
       incomeChartCtrl.chartLabels = categories.map(function (categories) {
         return categories.name;
       });
 
-      categories.map(function (category) {
-        // var transactionCount = category.transactions.length;
-        incomeChartCtrl.netDollarsData.push(category.total_credit);
-        // var averageDollars = category.reported_net / transactionCount;
-        // incomeChartCtrl.averageDollarsData[0].push(averageDollars);
+      incomeChartCtrl.netDollarsData = categories.map(function (category) {
+        return category.total_credit;
       });
-      console.log(incomeChartCtrl.netDollarsData);
     }
   };
 
   incomeChartCtrl.setOptions = function () {
-    var targetChartKey = Object.keys(CHART_OPTIONS)[incomeChartCtrl.selectedIndex];
-    var targetChart = CHART_OPTIONS[targetChartKey];
+    var targetChartKey = Object.keys(incomeChartCtrl.chartOptions)[incomeChartCtrl.selectedIndex];
+    var targetChart = incomeChartCtrl.chartOptions[targetChartKey];
     incomeChartCtrl.options = {
       title: {
         display: true,
         text: targetChart.title,
         fontSize: 16
       },
-      scales: {
-        yAxes: [{
-          scaleLabel: {
-            display: true,
-            labelString: targetChart.yLabel
-          }
-        }],
-        xAxes: [{
-          scaleLabel: {
-            display: true,
-            labelString: targetChart.xLabel
-          }
-        }]
+      legend: {
+        display: true,
+        position: "right"
       }
     };
   };

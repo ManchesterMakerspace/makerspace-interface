@@ -3,27 +3,9 @@ app.component('membershipChartComponent', {
   controller: membershipChartController,
   controllerAs: "membershipChartCtrl",
   bindings: {
-    transactions: '<'
+    income: '<'
   }
 });
-
-var CHART_OPTIONS = {
-  netDollars: {
-    title: "Total Monthly Membership Dues",
-    xLabel: "Month",
-    yLabel: "Net $"
-  },
-  averageDollars: {
-    title: "Average Monthly Membership Dues",
-    xLabel: "Month",
-    yLabel: "Average $"
-  },
-  totalCount: {
-    title: "Total Number Membership Dues",
-    xLabel: "Month",
-    yLabel: "Total"
-  },
-};
 
 function membershipChartController() {
   var membershipChartCtrl = this;
@@ -33,12 +15,33 @@ function membershipChartController() {
     membershipChartCtrl.countData = [[]];
     membershipChartCtrl.chartLabels = [];
     membershipChartCtrl.selectedIndex = 0;
+    membershipChartCtrl.chartOptions = {
+      netDollars: {
+        title: "Total Monthly Membership Dues",
+        xLabel: "Month",
+        yLabel: "Net $"
+      },
+      averageDollars: {
+        title: "Average Monthly Membership Dues",
+        xLabel: "Month",
+        yLabel: "Average $"
+      },
+      totalCount: {
+        title: "Total Number Membership Dues",
+        xLabel: "Month",
+        yLabel: "Total"
+      },
+    };
 
-    membershipChartCtrl.parseTransactions(membershipChartCtrl.transactions);
+    if (!membershipChartCtrl.income.isRequesting) {
+      membershipChartCtrl.parseTransactions(membershipChartCtrl.income.data);
+    }
   };
 
   membershipChartCtrl.$onChanges = function () {
-    membershipChartCtrl.parseTransactions(membershipChartCtrl.transactions);
+    if (!membershipChartCtrl.income.isRequesting) {
+      membershipChartCtrl.parseTransactions(membershipChartCtrl.income.data);
+    }
   };
 
   membershipChartCtrl.parseTransactions = function (groupedTransactions) {
@@ -58,8 +61,8 @@ function membershipChartController() {
   };
 
   membershipChartCtrl.setOptions = function () {
-    var targetChartKey = Object.keys(CHART_OPTIONS)[membershipChartCtrl.selectedIndex];
-    var targetChart = CHART_OPTIONS[targetChartKey];
+    var targetChartKey = Object.keys(membershipChartCtrl.chartOptions)[membershipChartCtrl.selectedIndex];
+    var targetChart = membershipChartCtrl.chartOptions[targetChartKey];
     membershipChartCtrl.options = {
       title: {
         display: true,

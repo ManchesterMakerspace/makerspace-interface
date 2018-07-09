@@ -40,40 +40,52 @@ var DATA_MAP = {
 function analyticsController(analyticsService) {
   var analyticsCtrl = this;
   analyticsCtrl.$onInit = function() {
-    analyticsCtrl.incomeData = [];
-    analyticsCtrl.expenseData = [];
+    analyticsCtrl.income = {
+      data: [],
+      isRequesting: false,
+      errors: "",
+      dataset: null
+    };
+    analyticsCtrl.expense = {
+      data: [],
+      isRequesting: false,
+      errors: "",
+      dataset: null
+    };
     analyticsCtrl.selectedIncomeIndex = 0;
-    analyticsCtrl.getTransactions("members");
   };
 
   analyticsCtrl.getTransactions = function (transaction_category) {
-    var data_map = DATA_MAP[transaction_category];
-
-    if (data_map.type === "Income") {
-      analyticsCtrl.incomeDataSet = transaction_category;
-      analyticsCtrl.incomeData = [];
-    } else {
-      analyticsCtrl.expenseDataSet = transaction_category;
-      analyticsCtrl.expenseData = [];
-    }
-
+    analyticsCtrl.setData(transaction_category, [], true);
     return analyticsService.getTransactions(DATA_MAP[transaction_category].categoryName).then(function (groupedTransactions) {
-      if (data_map.type === "Income") {
-        analyticsCtrl.incomeData = angular.copy(groupedTransactions);
-      } else {
-        analyticsCtrl.expenseData = angular.copy(groupedTransactions);
-      }
+      analyticsCtrl.setData(transaction_category, angular.copy(groupedTransactions), false);
+    }).catch(function (e) {
+      analyticsCtrl.setData(transaction_category, [], false, e);
     });
   };
 
   analyticsCtrl.getCategories = function (type) {
-    analyticsCtrl.incomeDataSet = type
+    analyticsCtrl.setData(type, [], true);
     return analyticsService.getCategories(type).then(function (transactions) {
-      if (type === "income") {
-        analyticsCtrl.incomeData = angular.copy(transactions);
-      } else {
-        analyticsCtrl.expenseData = angular.copy(transactions);
-      }
+      analyticsCtrl.setData(type, angular.copy(transactions), false);
+    }).catch(function (e) {
+      analyticsCtrl.setData(type, [], false, e);
     });
+  };
+
+  analyticsCtrl.setData = function (dataset, data, isRequesting, error = "") {
+    var desiredOutput = {
+      dataset: dataset,
+      data: data,
+      isRequesting: isRequesting,
+      error: error
+    };
+    var dataMap = DATA_MAP[dataset];
+    var dataType = dataMap && dataMap.type.toLowerCase();
+    if (dataType === 'income') {
+      analyticsCtrl.income = desiredOutput;
+    } else if (dataType === 'expense') {
+      analyticsCtrl.expense = desiredOutput;
+    }
   };
 }
