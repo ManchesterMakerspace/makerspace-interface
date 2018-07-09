@@ -2,22 +2,22 @@
   <md-tabs md-dynamic-height md-border-bottom md-selected="analyticsCtrl.selectedIncomeIndex">
     <md-tab label="Membership" md-on-select="analyticsCtrl.getTransactions('members')">
       <md-content class="md-padding">
-        <membership-chart-component transactions="analyticsCtrl.incomeData" ng-if="analyticsCtrl.incomeDataSet == 'members'"/>
+        <membership-chart-component income="analyticsCtrl.income" ng-if="analyticsCtrl.income.dataset == 'members'"/>
       </md-content>
     </md-tab>
     <md-tab label="Rentals" md-on-select="analyticsCtrl.getTransactions('rentals')">
       <md-content class="md-padding">
-        <!-- <rentals-chart-component transactions="analyticsCtrl.incomeData" ng-if="analyticsCtrl.incomeDataSet == 'rentals'"/> -->
+        <!-- <rentals-chart-component transactions="analyticsCtrl.incomeData" ng-if="analyticsCtrl.income.dataset == 'rentals'"/> -->
       </md-content>
     </md-tab>
     <md-tab label="Classes" md-on-select="analyticsCtrl.getTransactions('classes')">
       <md-content class="md-padding">
-        <!-- <classes-chart-component transactions="analyticsCtrl.incomeData" ng-if="analyticsCtrl.incomeDataSet == 'classes'"/> -->
+        <!-- <classes-chart-component transactions="analyticsCtrl.incomeData" ng-if="analyticsCtrl.income.dataset == 'classes'"/> -->
       </md-content>
     </md-tab>
     <md-tab label="Income By Source" md-on-select="analyticsCtrl.getCategories('income')">
       <md-content class="md-padding">
-        <income-chart-component categories="analyticsCtrl.incomeData" ng-if="analyticsCtrl.incomeDataSet == 'income'"/>
+        <income-chart-component income="analyticsCtrl.income" ng-if="analyticsCtrl.income.dataset == 'income'"/>
       </md-content>
     </md-tab>
   </md-tabs>
@@ -25,17 +25,17 @@
   <md-tabs md-dynamic-height md-border-bottom md-selected="analyticsCtrl.selectedExpenseIndex">
     <md-tab label="Utilities" md-on-select="analyticsCtrl.getTransactions('utilities')">
       <md-content class="md-padding">
-        <!-- <utilities-chart-component categories="analyticsCtrl.expenseData" ng-if="analyticsCtrl.expenseDataSet == 'utilities'"/> -->
+        <!-- <utilities-chart-component categories="analyticsCtrl.expenseData" ng-if="analyticsCtrl.expense.dataset == 'utilities'"/> -->
       </md-content>
     </md-tab>
     <md-tab label="Shop Expense" md-on-select="analyticsCtrl.getTransactions('shops')">
       <md-content class="md-padding">
-        <!-- <shop-chart-component categories="analyticsCtrl.expenseData" ng-if="analyticsCtrl.expenseDataSet == 'shops'"/> -->
+        <!-- <shop-chart-component categories="analyticsCtrl.expenseData" ng-if="analyticsCtrl.expense.dataset == 'shops'"/> -->
       </md-content>
     </md-tab>
     <md-tab label="Expenses By Source" md-on-select="analyticsCtrl.getCategories('expense')">
       <md-content class="md-padding">
-        <!-- <expense-chart-component categories="analyticsCtrl.expenseData" ng-if="analyticsCtrl.expenseDataSet == 'expense'"/> -->
+        <!-- <expense-chart-component categories="analyticsCtrl.expenseData" ng-if="analyticsCtrl.expense.dataset == 'expense'"/> -->
       </md-content>
     </md-tab>
   </md-tabs>

@@ -1,4 +1,5 @@
-<md-tabs md-dynamic-height md-border-bottom md-selected="membershipChartCtrl.selectedIndex">
+<md-tabs md-dynamic-height md-border-bottom md-selected="membershipChartCtrl.selectedIndex"
+ ng-if="!membershipChartCtrl.income.isRequesting">
   <md-tab label="Net Dollars" md-on-select="membershipChartCtrl.setOptions()">
     <md-content class="md-padding">
       <div class= "col-xs-12">
@@ -36,3 +37,6 @@
     </md-content>
   </md-tab>
 </md-tabs>
+<div ng-if="membershipChartCtrl.income.isRequesting">
+  Loading
+</div>
