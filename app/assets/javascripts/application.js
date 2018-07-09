@@ -23,4 +23,6 @@
 //= require angular-cookie
 //= require signature_pad/dist/signature_pad
 //= require socket.io
+//= require chart.js/dist/Chart.min.js
+//= require angular-chart.js/angular-chart.js
 //= require_tree .

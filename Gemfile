@@ -24,6 +24,9 @@ gem 'socket.io-rails'
 gem 'google-api-client', require: ['google/apis/calendar_v3', 'google/apis/drive_v3']
 gem 'mini_magick'
 
+# Accounting Utils
+gem 'groupdate'
+
 group :development do
   gem 'byebug', platform: :mri
   # Spring speeds up development by keeping your application running in the background.

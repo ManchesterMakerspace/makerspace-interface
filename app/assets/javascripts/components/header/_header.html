@@ -19,6 +19,11 @@
           <li><a class='navbar-link' ui-sref="root.members">Members</a></li>
           <li><a class='navbar-link' ui-sref="root.rentals">Rentals</a></li>
           <li><a class='navbar-link' ui-sref="root.admin.memberships.new"  ng-if="headerCtrl.isAdmin()">Memberships</a></li>
+          <li>
+            <a ng-if="headerCtrl.isAdmin()"
+              ui-sref="root.admin.analytics"
+              class="navbar-link">Analytics</a>
+          </li>
         </ul>
         <ul class="nav navbar-nav navbar-right" id="auth">
           <div class="navbar-link" ng-if="headerCtrl.currentUser.id">

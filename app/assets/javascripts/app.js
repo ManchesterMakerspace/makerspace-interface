@@ -7,7 +7,8 @@ var app = angular.module('app', [
   'ngMaterial',
   'ngMessages',
   'signature',
-  'ipCookie'
+  'ipCookie',
+  "chart.js"
 ]).run(function($transitions, $state, Auth, alertService){
   $transitions.onStart({}, function(trans){
     var toState = trans.to();
@@ -27,7 +28,12 @@ var app = angular.module('app', [
       });
     }
   });
-}).config(function($stateProvider, $urlRouterProvider, $locationProvider, AuthProvider){
+}).config(function($stateProvider, $urlRouterProvider, $locationProvider, AuthProvider, ChartJsProvider){
+  // Configure all charts
+  ChartJsProvider.setOptions({
+    responsive: false
+  });
+
   $locationProvider.hashPrefix('');
 
   AuthProvider.resourceName('member');
@@ -210,5 +216,9 @@ var app = angular.module('app', [
     .state('root.admin.rentals.new', {
       url: '/new',
       component: 'rentalFormComponent'
+    })
+    .state('root.admin.analytics', {
+      url: '/analytics',
+      component: 'analyticsComponent'
     });
 });

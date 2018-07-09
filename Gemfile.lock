@@ -102,6 +102,8 @@ GEM
       multi_json (~> 1.11)
       os (~> 0.9)
       signet (~> 0.7)
+    groupdate (4.0.1)
+      activesupport (>= 4.2)
     httpclient (2.8.3)
     i18n (0.8.6)
     json (2.1.0)
@@ -294,6 +296,7 @@ DEPENDENCIES
   factory_bot
   google-api-client
   google_drive
+  groupdate
   mini_magick
   mongoid (~> 6.0.0)
   mongoid-rspec
