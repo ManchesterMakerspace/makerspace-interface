@@ -1,5 +1,6 @@
 class VirtualAccountant::Transaction
   include Mongoid::Document
+  include ActiveModel::Serializers::JSON
   store_in collection: "transactions", database: "makerspace_accounting", client: "accounting"
 
   attr_accessor :date
@@ -15,7 +16,7 @@ class VirtualAccountant::Transaction
   # belongs_to :vendor, class_name: "VirtualAccountant::Vendor", optional: true
 
   validate :date_is_valid
-  # validate :transaction_type_is_valid
+  validate :transaction_type_is_valid
 
   def self.row_to_transaction_hash(csv_row)
     date, description, credit, debit = csv_row

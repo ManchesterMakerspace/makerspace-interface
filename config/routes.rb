@@ -25,6 +25,10 @@ Rails.application.routes.draw do
         resources :cards, only: [:new, :create, :index, :update]
         resources :rentals, only: [:create, :update, :destroy]
         resources :members, only: [:create, :update]
+        namespace :virtual_accountant do
+          get 'transactions', to: "transactions#charts"
+          get 'categories', to: "categories#charts"
+        end
       end
     end
   end

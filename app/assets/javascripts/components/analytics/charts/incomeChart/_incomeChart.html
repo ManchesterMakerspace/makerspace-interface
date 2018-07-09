@@ -1,0 +1,24 @@
+<md-tabs md-dynamic-height md-border-bottom md-selected="incomeChartCtrl.selectedIndex">
+  <md-tab label="Net Dollars" md-on-select="incomeChartCtrl.setOptions()">
+    <md-content class="md-padding">
+      <div class= "col-xs-12">
+        <canvas class="chart chart-doughnut"
+          chart-data="incomeChartCtrl.netDollarsData"
+          chart-labels="incomeChartCtrl.chartLabels"
+          width="1000"
+          height="500"></canvas>
+      </div>
+    </md-content>
+  </md-tab>
+  <md-tab label="Average Dollars" md-on-select="incomeChartCtrl.setOptions()">
+    <md-content class="md-padding">
+      <div class= "col-xs-12">
+        <!-- <canvas class="chart chart-doughnut"
+          chart-data="incomeChartCtrl.averageDollarsData"
+          chart-labels="incomeChartCtrl.chartLabels"
+          width="1000"
+          height="500"></canvas> -->
+      </div>
+    </md-content>
+  </md-tab>
+</md-tabs>

@@ -11,7 +11,8 @@
     "angular-messages": "latest",
     "angular-devise": "latest",
     "angular-signature": "latest",
-    "angular-cookie": "latest"
+    "angular-cookie": "latest",
+    "chart.js": "^2.7.2"
   },
   "resolutions": {
     "angular": "1.6.4"
