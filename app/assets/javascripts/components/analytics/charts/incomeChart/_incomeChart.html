@@ -1,26 +1,45 @@
-<md-tabs md-dynamic-height md-border-bottom md-selected="incomeChartCtrl.selectedIndex"
-ng-if="!incomeChartCtrl.income.isRequesting">
-  <md-tab label="Net Dollars" md-on-select="incomeChartCtrl.setOptions()">
-    <md-content class="md-padding">
-      <div class= "col-xs-12">
-        <canvas class="chart chart-doughnut"
-          chart-data="incomeChartCtrl.netDollarsData"
-          chart-labels="incomeChartCtrl.chartLabels"
-          chart-options="incomeChartCtrl.options"
-          width="1000"
-          height="500"></canvas>
-      </div>
-    </md-content>
-  </md-tab>
-  <md-tab label="Average Dollars" md-on-select="incomeChartCtrl.setOptions()">
-    <md-content class="md-padding">
-      <div class= "col-xs-12">
-        <!-- <canvas class="chart chart-doughnut"
-          chart-data="incomeChartCtrl.averageDollarsData"
-          chart-labels="incomeChartCtrl.chartLabels"
-          width="1000"
-          height="500"></canvas> -->
-      </div>
-    </md-content>
-  </md-tab>
-</md-tabs>
+<div class="col-xs-12">
+  <div class="row">
+    <div class="col-xs-12">
+      <md-input-container>
+         <label>Filter Categories</label>
+         <md-select ng-model="includedLabels" md-on-open="includedLabels = incomeChartCtrl.includedLabels" multiple>
+           <md-option ng-repeat="label in incomeChartCtrl.allLabels"
+            ng-click="incomeChartCtrl.updateLabels(label)"
+            ng-selected="!incomeChartCtrl.includeLabel(label)"
+            ng-value="label">{{label}}</md-option>
+         </md-select>
+       </md-input-container>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">
+      <md-tabs md-dynamic-height md-border-bottom md-selected="incomeChartCtrl.selectedIndex"
+      ng-if="!incomeChartCtrl.income.isRequesting">
+        <md-tab label="Net Dollars" md-on-select="incomeChartCtrl.setOptions()">
+          <md-content class="md-padding">
+            <div class= "col-xs-12">
+              <canvas class="chart chart-doughnut"
+                chart-data="incomeChartCtrl.netDollarsData"
+                chart-labels="incomeChartCtrl.chartLabels"
+                chart-options="incomeChartCtrl.options"
+                width="1000"
+                height="500"></canvas>
+            </div>
+          </md-content>
+        </md-tab>
+        <md-tab label="Average Dollars" md-on-select="incomeChartCtrl.setOptions()">
+          <md-content class="md-padding">
+            <div class= "col-xs-12">
+              <!-- <canvas class="chart chart-doughnut"
+                chart-data="incomeChartCtrl.averageDollarsData"
+                chart-labels="incomeChartCtrl.chartLabels"
+                width="1000"
+                height="500"></canvas> -->
+            </div>
+          </md-content>
+        </md-tab>
+      </md-tabs>
+    </div>
+  </div>
+</div>
