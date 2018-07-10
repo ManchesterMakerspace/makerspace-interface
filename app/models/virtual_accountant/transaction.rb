@@ -16,17 +16,18 @@ class VirtualAccountant::Transaction
   belongs_to :transaction_category, class_name: "VirtualAccountant::Category", optional: true
   # belongs_to :vendor, class_name: "VirtualAccountant::Vendor", optional: true
 
-  validates :net_amt, presence: true
-  validates :transaction_date, presence: true
-  validates :description, presence: true
-  validates :type, presence: true
-
   validate :date_is_valid, on: :create
   validate :transaction_type_is_valid, on: :create
 
+  validates :net_amt, presence: true
+  validates :description, presence: true
+  validates :type, presence: true
+
   def self.row_to_transaction_hash(csv_row)
     date, description, credit, debit = csv_row
-    { date: date, description: description, credit_amt: credit.gsub(",", ""), debit_amt: debit.gsub(",", "")}
+    credit_amt = credit.gsub(",", "") unless credit.nil?
+    debit_amt = debit.gsub(",", "") unless debit.nil?
+    { date: date, description: description, credit_amt: credit_amt, debit_amt: debit_amt}
   end
 
   private
