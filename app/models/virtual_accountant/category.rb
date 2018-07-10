@@ -48,8 +48,8 @@ class VirtualAccountant::Category
   def parse_total(csv_row)
     return unless csv_row.first =~ Regexp.new("^(Total #{self.name})")
     *, debit, credit = csv_row
-    self.total_debit = from_currency(debit).round(2)
-    self.total_credit = from_currency(credit).round(2)
+    self.reported_debit = from_currency(debit).round(2)
+    self.reported_credit = from_currency(credit).round(2)
   end
 
   def parse_net(csv_row)
