@@ -4,18 +4,19 @@ class VirtualAccountant::Category
   store_in collection: "categories", database: "makerspace_accounting", client: "accounting"
 
   attr_accessor :csv_row
+  attr_reader :balance
 
   field :name, type: String
-  field :total_debit, type: Float
-  field :total_credit, type: Float
+  field :reported_credit, type: Float
+  field :reported_debit, type: Float
   field :reported_net, type: Float
   field :transaction_type, type: String
 
   has_many :transactions, class_name: "VirtualAccountant::Transaction", autosave: true
   # has_many :vendors, class_name: "VirtualAccountant::Vendor"
 
-  validates :total_debit, presence: true
-  validates :total_credit, presence: true
+  validates :reported_debit, presence: true
+  validates :reported_credit, presence: true
   validates :reported_net, presence: true
   validates :transaction_type, presence: true
 
@@ -58,5 +59,9 @@ class VirtualAccountant::Category
       net_amt = -net_amt
     end
     return net_amt
+  end
+
+  def balance
+    return self.transactions.reduce(0) { |sum, transaction| sum += transaction.net_amt }.round(2)
   end
 end
