@@ -1,42 +1,60 @@
-<md-tabs md-dynamic-height md-border-bottom md-selected="membershipChartCtrl.selectedIndex"
- ng-if="!membershipChartCtrl.income.isRequesting">
-  <md-tab label="Net Dollars" md-on-select="membershipChartCtrl.setOptions()">
-    <md-content class="md-padding">
-      <div class= "col-xs-12">
-        <canvas class="chart chart-bar"
-          chart-data="membershipChartCtrl.netDollarsData"
-          chart-labels="membershipChartCtrl.chartLabels"
-          chart-options="membershipChartCtrl.options"
-          width="1000"
-          height="500"></canvas>
-      </div>
-    </md-content>
-  </md-tab>
-  <md-tab label="Average Dollars" md-on-select="membershipChartCtrl.setOptions()">
-    <md-content class="md-padding">
-      <div class= "col-xs-12">
-        <canvas class="chart chart-bar"
-          chart-data="membershipChartCtrl.averageDollarsData"
-          chart-labels="membershipChartCtrl.chartLabels"
-          chart-options="membershipChartCtrl.options"
-          width="1000"
-          height="500"></canvas>
-      </div>
-    </md-content>
-  </md-tab>
-  <md-tab label="Count" md-on-select="membershipChartCtrl.setOptions()">
-    <md-content class="md-padding">
-      <div class="col-xs-12">
-        <canvas class="chart chart-bar"
-          chart-data="membershipChartCtrl.countData"
-          chart-labels="membershipChartCtrl.chartLabels"
-          chart-options="membershipChartCtrl.options"
-          width="1000"
-          height="500"></canvas>
-      </div>
-    </md-content>
-  </md-tab>
-</md-tabs>
-<div ng-if="membershipChartCtrl.income.isRequesting">
-  Loading
+<div class="col-xs-12 text-center">
+  <md-input-container>
+    <label for="startDate">Start Date</label>
+    <md-datepicker name="startDate" id="startDate"
+      md-open-on-focus
+      ng-change="membershipChartCtrl.parseTransactions()"
+      ng-model="membershipChartCtrl.startDate"/>
+  </md-input-container>
+  <span> - </span>
+  <md-input-container>
+    <label for="endDate">End Date</label>
+    <md-datepicker name="endDate" id="endDate"
+      md-open-on-focus
+      ng-change="membershipChartCtrl.parseTransactions()"
+      ng-model="membershipChartCtrl.endDate"/>
+  </md-input-container>
+
+  <md-tabs md-dynamic-height md-border-bottom md-selected="membershipChartCtrl.selectedIndex"
+   ng-if="!membershipChartCtrl.income.isRequesting">
+    <md-tab label="Net Dollars" md-on-select="membershipChartCtrl.setOptions()">
+      <md-content class="md-padding">
+        <div class= "col-xs-12">
+          <canvas class="chart chart-bar"
+            chart-data="membershipChartCtrl.netDollarsData"
+            chart-labels="membershipChartCtrl.chartLabels"
+            chart-options="membershipChartCtrl.options"
+            width="1000"
+            height="500"></canvas>
+        </div>
+      </md-content>
+    </md-tab>
+    <md-tab label="Average Dollars" md-on-select="membershipChartCtrl.setOptions()">
+      <md-content class="md-padding">
+        <div class= "col-xs-12">
+          <canvas class="chart chart-bar"
+            chart-data="membershipChartCtrl.averageDollarsData"
+            chart-labels="membershipChartCtrl.chartLabels"
+            chart-options="membershipChartCtrl.options"
+            width="1000"
+            height="500"></canvas>
+        </div>
+      </md-content>
+    </md-tab>
+    <md-tab label="Count" md-on-select="membershipChartCtrl.setOptions()">
+      <md-content class="md-padding">
+        <div class="col-xs-12">
+          <canvas class="chart chart-bar"
+            chart-data="membershipChartCtrl.countData"
+            chart-labels="membershipChartCtrl.chartLabels"
+            chart-options="membershipChartCtrl.options"
+            width="1000"
+            height="500"></canvas>
+        </div>
+      </md-content>
+    </md-tab>
+  </md-tabs>
+  <div ng-if="membershipChartCtrl.income.isRequesting">
+    Loading
+  </div>
 </div>

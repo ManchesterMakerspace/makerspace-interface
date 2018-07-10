@@ -10,6 +10,7 @@ app.component('membershipChartComponent', {
 function membershipChartController() {
   var membershipChartCtrl = this;
   membershipChartCtrl.$onInit = function() {
+    membershipChartCtrl.dataSetKey = "members";
     membershipChartCtrl.netDollarsData = [[]];
     membershipChartCtrl.averageDollarsData = [[]];
     membershipChartCtrl.countData = [[]];
@@ -27,27 +28,52 @@ function membershipChartController() {
         yLabel: "Average $"
       },
       totalCount: {
-        title: "Total Number Membership Dues",
+        title: "Total Number Membership Payments",
         xLabel: "Month",
         yLabel: "Total"
       },
     };
 
     if (!membershipChartCtrl.income.isRequesting) {
-      membershipChartCtrl.parseTransactions(membershipChartCtrl.income.data);
+      membershipChartCtrl.parseTransactions();
     }
   };
 
   membershipChartCtrl.$onChanges = function () {
     if (!membershipChartCtrl.income.isRequesting) {
-      membershipChartCtrl.parseTransactions(membershipChartCtrl.income.data);
+      membershipChartCtrl.parseTransactions();
     }
   };
 
-  membershipChartCtrl.parseTransactions = function (groupedTransactions) {
-    membershipChartCtrl.chartLabels = Object.keys(groupedTransactions);
+  membershipChartCtrl.parseTransactions = function () {
+    if (angular.equals(membershipChartCtrl.income.data[membershipChartCtrl.dataSetKey], membershipChartCtrl.displayedTransactions)) {
+      return;
+    }
+    membershipChartCtrl.displayedTransactions = angular.copy(membershipChartCtrl.income.data[membershipChartCtrl.dataSetKey]);
 
-    Object.values(groupedTransactions).map(function (transactions) {
+    var filteredTransactions = {};
+    var startDate = Date.parse(membershipChartCtrl.startDate);
+    var endDate = Date.parse(membershipChartCtrl.endDate);
+
+    for (var dateStr in membershipChartCtrl.displayedTransactions) {
+      var date = Date.parse(dateStr);
+      var skip = false;
+      if (startDate && date < startDate) {
+        skip = true;
+      }
+      if (endDate && date > endDate) {
+        skip = true;
+      }
+      if (!skip) {
+        filteredTransactions[date] = membershipChartCtrl.displayedTransactions[dateStr];
+      }
+    }
+
+    membershipChartCtrl.chartLabels = Object.keys(filteredTransactions).map(function (date) {
+      return new Date(parseInt(date)).toDateString();
+    });
+
+    Object.values(filteredTransactions).map(function (transactions) {
       var transactionCount = transactions.length;
       var netDollars = transactions.reduce(function (accumulator, transaction) {
         accumulator = accumulator + (transaction.debit_amt - transaction.credit_amt);

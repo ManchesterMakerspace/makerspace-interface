@@ -41,13 +41,22 @@ function analyticsController(analyticsService) {
   var analyticsCtrl = this;
   analyticsCtrl.$onInit = function() {
     analyticsCtrl.income = {
-      data: [],
+      data: {
+        members: [],
+        rentals: [],
+        classes: [],
+        income: []
+      },
       isRequesting: false,
       errors: "",
       dataset: null
     };
     analyticsCtrl.expense = {
-      data: [],
+      data: {
+        utilities: [],
+        shops: [],
+        expense: []
+      },
       isRequesting: false,
       errors: "",
       dataset: null
@@ -76,15 +85,18 @@ function analyticsController(analyticsService) {
   analyticsCtrl.setData = function (dataset, data, isRequesting, error = "") {
     var desiredOutput = {
       dataset: dataset,
-      data: data,
       isRequesting: isRequesting,
       error: error
     };
     var dataMap = DATA_MAP[dataset];
     var dataType = dataMap && dataMap.type.toLowerCase();
     if (dataType === 'income') {
+      desiredOutput.data = angular.copy(analyticsCtrl.income.data);
+      desiredOutput.data[dataset] = data;
       analyticsCtrl.income = desiredOutput;
     } else if (dataType === 'expense') {
+      desiredOutput.data = angular.copy(analyticsCtrl.expense.data);
+      desiredOutput.data[dataset] = data;
       analyticsCtrl.expense = desiredOutput;
     }
   };
