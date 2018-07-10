@@ -3,14 +3,13 @@ app.component('membershipChartComponent', {
   controller: membershipChartController,
   controllerAs: "membershipChartCtrl",
   bindings: {
-    income: '<'
+    transactions: '<'
   }
 });
 
 function membershipChartController() {
   var membershipChartCtrl = this;
   membershipChartCtrl.$onInit = function() {
-    membershipChartCtrl.dataSetKey = "members";
     membershipChartCtrl.netDollarsData = [[]];
     membershipChartCtrl.averageDollarsData = [[]];
     membershipChartCtrl.countData = [[]];
@@ -34,23 +33,22 @@ function membershipChartController() {
       },
     };
 
-    if (!membershipChartCtrl.income.isRequesting) {
+    if (!membershipChartCtrl.transactions.isRequesting) {
       membershipChartCtrl.parseTransactions();
     }
   };
 
   membershipChartCtrl.$onChanges = function () {
-    if (!membershipChartCtrl.income.isRequesting) {
+    if (!membershipChartCtrl.transactions.isRequesting) {
       membershipChartCtrl.parseTransactions();
     }
   };
 
   membershipChartCtrl.parseTransactions = function () {
-    if (angular.equals(membershipChartCtrl.income.data[membershipChartCtrl.dataSetKey], membershipChartCtrl.displayedTransactions)) {
+    if (angular.equals(membershipChartCtrl.transactions.data, membershipChartCtrl.displayedTransactions)) {
       return;
     }
-    membershipChartCtrl.displayedTransactions = angular.copy(membershipChartCtrl.income.data[membershipChartCtrl.dataSetKey]);
-
+    membershipChartCtrl.displayedTransactions = angular.copy(membershipChartCtrl.transactions.data);
     var filteredTransactions = {};
     var startDate = Date.parse(membershipChartCtrl.startDate);
     var endDate = Date.parse(membershipChartCtrl.endDate);

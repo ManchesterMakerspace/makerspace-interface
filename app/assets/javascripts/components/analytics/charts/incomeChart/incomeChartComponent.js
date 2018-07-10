@@ -10,7 +10,6 @@ app.component('incomeChartComponent', {
 function incomeChartController() {
   var incomeChartCtrl = this;
   incomeChartCtrl.$onInit = function() {
-    incomeChartCtrl.dataSetKey = "income";
     incomeChartCtrl.netDollarsData = [];
     incomeChartCtrl.averageDollarsData = [[]];
     incomeChartCtrl.chartLabels = [];
@@ -25,27 +24,24 @@ function incomeChartController() {
         title: "Average Monthly Income by Source",
       },
     };
-
-    if (!incomeChartCtrl.income.isRequesting) {
-      var incomingData = incomeChartCtrl.income.data[incomeChartCtrl.dataSetKey];
-      if (!incomingData || angular.equals(incomingData, incomeChartCtrl.currentData)) {
-        return;
-      }
-      incomeChartCtrl.sortCategories();
-      incomeChartCtrl.allLabels = incomeChartCtrl.getLabels(incomeChartCtrl.income.data[incomeChartCtrl.dataSetKey]);
-      incomeChartCtrl.parseCategories();
-    }
+    incomeChartCtrl.loadAndParseCategories();
   };
 
-  incomeChartCtrl.$onChanges = function () {
+  incomeChartCtrl.$onChanges = function (changes) {
+    if (changes.income.isFirstChange()) { return; } // Make onInit fire first
+    incomeChartCtrl.loadAndParseCategories();
+  };
+
+  incomeChartCtrl.loadAndParseCategories = function () {
     if (!incomeChartCtrl.income.isRequesting) {
-      var incomingData = incomeChartCtrl.income.data[incomeChartCtrl.dataSetKey];
+      var incomingData = incomeChartCtrl.income.data;
       if (!incomingData || angular.equals(incomingData, incomeChartCtrl.currentData)) {
         return;
       }
       incomeChartCtrl.currentData = incomingData;
       incomeChartCtrl.sortCategories();
-      incomeChartCtrl.allLabels = incomeChartCtrl.getLabels(incomeChartCtrl.income.data[incomeChartCtrl.dataSetKey]);
+      incomeChartCtrl.allLabels = incomeChartCtrl.getLabels(incomeChartCtrl.income.data);
+
       incomeChartCtrl.parseCategories();
     }
   };
@@ -61,13 +57,13 @@ function incomeChartController() {
   };
 
   incomeChartCtrl.sortCategories = function () {
-    incomeChartCtrl.income.data[incomeChartCtrl.dataSetKey].sort(function (a, b) {
+    incomeChartCtrl.income.data.sort(function (a, b) {
       return b.total_credit - a.total_credit;
     });
   };
 
   incomeChartCtrl.parseCategories = function () {
-    incomeChartCtrl.displayedCategories = angular.copy(incomeChartCtrl.income.data[incomeChartCtrl.dataSetKey]);
+    incomeChartCtrl.displayedCategories = angular.copy(incomeChartCtrl.income.data);
     if (incomeChartCtrl.includedLabels.length) {
       incomeChartCtrl.displayedCategories = incomeChartCtrl.displayedCategories.filter(function (c) {
         return incomeChartCtrl.includeLabel(incomeChartCtrl.getLabel(c));
