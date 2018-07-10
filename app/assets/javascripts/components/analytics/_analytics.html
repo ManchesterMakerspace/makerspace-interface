@@ -4,7 +4,7 @@
       <md-tabs md-dynamic-height md-border-bottom md-selected="analyticsCtrl.selectedIncomeIndex">
         <md-tab label="Membership" md-on-select="analyticsCtrl.getTransactions('members')">
           <md-content class="md-padding">
-            <membership-chart-component income="analyticsCtrl.income" ng-show="analyticsCtrl.income.dataset == 'members'"/>
+            <membership-chart-component transactions="analyticsCtrl.income.members" ng-show="analyticsCtrl.selectedIncomeIndex == 0"/>
           </md-content>
         </md-tab>
         <md-tab label="Rentals" md-on-select="analyticsCtrl.getTransactions('rentals')">
@@ -19,7 +19,7 @@
         </md-tab>
         <md-tab label="Income By Source" md-on-select="analyticsCtrl.getCategories('income')">
           <md-content class="md-padding">
-            <income-chart-component income="analyticsCtrl.income" ng-show="analyticsCtrl.income.dataset == 'income'"/>
+            <income-chart-component income="analyticsCtrl.income.income" ng-show="analyticsCtrl.selectedIncomeIndex == 3"/>
           </md-content>
         </md-tab>
       </md-tabs>
