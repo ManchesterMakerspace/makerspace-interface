@@ -9,18 +9,24 @@ class VirtualAccountant::Transaction
   field :description, type: String
   field :credit_amt, type: Float
   field :debit_amt, type: Float
+  field :net_amt, type: Float
   field :type, type: String
   field :import_date, type: Date, default: Date.today
 
   belongs_to :transaction_category, class_name: "VirtualAccountant::Category", optional: true
   # belongs_to :vendor, class_name: "VirtualAccountant::Vendor", optional: true
 
-  validate :date_is_valid
-  validate :transaction_type_is_valid
+  validates :net_amt, presence: true
+  validates :transaction_date, presence: true
+  validates :description, presence: true
+  validates :type, presence: true
+
+  validate :date_is_valid, on: :create
+  validate :transaction_type_is_valid, on: :create
 
   def self.row_to_transaction_hash(csv_row)
     date, description, credit, debit = csv_row
-    { date: date, description: description, credit_amt: credit, debit_amt: debit}
+    { date: date, description: description, credit_amt: credit.gsub(",", ""), debit_amt: debit.gsub(",", "")}
   end
 
   private
@@ -55,5 +61,23 @@ class VirtualAccountant::Transaction
       return false unless /(Expense|Income)/ === trans_type
       self.type = trans_type === "Expense" ? :expense : :income
     end
+    calculate_net_amt
+  end
+
+  def calculate_net_amt
+    type_found = true
+    case self.type.to_sym
+    when :expense
+      self.net_amt = (self.debit_amt || 0) - (self.credit_amt || 0)
+    when :income
+      self.net_amt = (self.credit_amt || 0) - (self.debit_amt || 0)
+    when :transfer_from
+      self.net_amt = (self.debit_amt || 0) - (self.credit_amt || 0)
+    when :transfer_to
+      self.net_amt = (self.credit_amt || 0) -( self.debit_amt || 0)
+    else
+      type_found = false # Return validation error if not recognized type
+    end
+    type_found
   end
 end
