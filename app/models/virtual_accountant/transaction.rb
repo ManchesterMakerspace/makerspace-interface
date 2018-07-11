@@ -24,7 +24,7 @@ class VirtualAccountant::Transaction
   validates :type, presence: true
 
   def self.row_to_transaction_hash(csv_row)
-    date, description, credit, debit = csv_row
+    date, description, debit, credit = csv_row
     credit_amt = credit.gsub(",", "") unless credit.nil?
     debit_amt = debit.gsub(",", "") unless debit.nil?
     { date: date, description: description, credit_amt: credit_amt, debit_amt: debit_amt}

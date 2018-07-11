@@ -3,13 +3,16 @@ app.component('incomeChartComponent', {
   controller: incomeChartController,
   controllerAs: "incomeChartCtrl",
   bindings: {
-    income: '<'
+    chartData: '<',
+    reloadData: '&'
   }
 });
 
 function incomeChartController() {
   var incomeChartCtrl = this;
   incomeChartCtrl.$onInit = function() {
+    incomeChartCtrl.datasetKey = 'income';
+    incomeChartCtrl.dataSource = 'categories';
     incomeChartCtrl.netDollarsData = [];
     incomeChartCtrl.averageDollarsData = [[]];
     incomeChartCtrl.chartLabels = [];
@@ -28,19 +31,30 @@ function incomeChartController() {
   };
 
   incomeChartCtrl.$onChanges = function (changes) {
-    if (changes.income.isFirstChange()) { return; } // Make onInit fire first
+    if (changes.chartData.isFirstChange()) { return; } // Make onInit fire first
     incomeChartCtrl.loadAndParseCategories();
   };
 
+  incomeChartCtrl.getCategoryParams = function (){
+    return {
+      source: incomeChartCtrl.dataSource,
+      params: {
+        type: incomeChartCtrl.datasetKey,
+        startDate: incomeChartCtrl.startDate,
+        endDate: incomeChartCtrl.endDate
+      }
+    };
+  };
+
   incomeChartCtrl.loadAndParseCategories = function () {
-    if (!incomeChartCtrl.income.isRequesting) {
-      var incomingData = incomeChartCtrl.income.data;
+    if (!incomeChartCtrl.chartData.isRequesting) {
+      var incomingData = incomeChartCtrl.chartData.data;
       if (!incomingData || angular.equals(incomingData, incomeChartCtrl.currentData)) {
         return;
       }
       incomeChartCtrl.currentData = incomingData;
       incomeChartCtrl.sortCategories();
-      incomeChartCtrl.allLabels = incomeChartCtrl.getLabels(incomeChartCtrl.income.data);
+      incomeChartCtrl.allLabels = incomeChartCtrl.getLabels(incomeChartCtrl.chartData.data);
 
       incomeChartCtrl.parseCategories();
     }
@@ -57,13 +71,13 @@ function incomeChartController() {
   };
 
   incomeChartCtrl.sortCategories = function () {
-    incomeChartCtrl.income.data.sort(function (a, b) {
-      return b.total_credit - a.total_credit;
+    incomeChartCtrl.chartData.data.sort(function (a, b) {
+      return b.calculated_net - a.calculated_net;
     });
   };
 
   incomeChartCtrl.parseCategories = function () {
-    incomeChartCtrl.displayedCategories = angular.copy(incomeChartCtrl.income.data);
+    incomeChartCtrl.displayedCategories = angular.copy(incomeChartCtrl.chartData.data);
     if (incomeChartCtrl.includedLabels.length) {
       incomeChartCtrl.displayedCategories = incomeChartCtrl.displayedCategories.filter(function (c) {
         return incomeChartCtrl.includeLabel(incomeChartCtrl.getLabel(c));
@@ -73,7 +87,7 @@ function incomeChartController() {
       incomeChartCtrl.chartLabels = incomeChartCtrl.getLabels(incomeChartCtrl.displayedCategories);
       incomeChartCtrl.includedLabels = angular.copy(incomeChartCtrl.chartLabels);
       incomeChartCtrl.netDollarsData = incomeChartCtrl.displayedCategories.map(function (category) {
-        return category.total_credit;
+        return category.calculated_net;
       });
     }
   };

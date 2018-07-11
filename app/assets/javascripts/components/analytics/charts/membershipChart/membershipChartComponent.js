@@ -3,13 +3,19 @@ app.component('membershipChartComponent', {
   controller: membershipChartController,
   controllerAs: "membershipChartCtrl",
   bindings: {
-    transactions: '<'
+    chartData: '<',
+    reloadData: '&',
+    groupDataOptions: '<',
+    datasetOptions: '<',
+    datasetKey: '<',
   }
 });
 
 function membershipChartController() {
   var membershipChartCtrl = this;
   membershipChartCtrl.$onInit = function() {
+    membershipChartCtrl.dataSource = 'transactions';
+    membershipChartCtrl.groupBy = 'month';
     membershipChartCtrl.netDollarsData = [[]];
     membershipChartCtrl.averageDollarsData = [[]];
     membershipChartCtrl.countData = [[]];
@@ -33,55 +39,60 @@ function membershipChartController() {
       },
     };
 
-    if (!membershipChartCtrl.transactions.isRequesting) {
-      membershipChartCtrl.parseTransactions();
+    membershipChartCtrl.loadAndParseData();
+  };
+
+  membershipChartCtrl.$onChanges = function (changes) {
+    if (changes.chartData.isFirstChange()) { return; } // Make onInit fire first
+    membershipChartCtrl.loadAndParseData();
+  };
+
+  membershipChartCtrl.getDataParams = function (){
+    return {
+      source: membershipChartCtrl.dataSource,
+      params: {
+        type: membershipChartCtrl.datasetKey,
+        grouping: membershipChartCtrl.groupBy,
+        startDate: membershipChartCtrl.startDate,
+        endDate: membershipChartCtrl.endDate
+      }
+    };
+  };
+
+  membershipChartCtrl.loadAndParseData = function () {
+    if (!membershipChartCtrl.chartData.isRequesting) {
+      var incomingData = membershipChartCtrl.chartData.data;
+      if (!incomingData || angular.equals(incomingData, membershipChartCtrl.currentData)) {
+        return;
+      }
+      membershipChartCtrl.currentData = incomingData;
+
+      membershipChartCtrl.parseData();
     }
   };
 
-  membershipChartCtrl.$onChanges = function () {
-    if (!membershipChartCtrl.transactions.isRequesting) {
-      membershipChartCtrl.parseTransactions();
-    }
-  };
+  membershipChartCtrl.parseData = function () {
+    membershipChartCtrl.displayedTransactions = angular.copy(membershipChartCtrl.chartData.data);
+    var netData = [];
+    var countData = [];
+    var averageData = [];
 
-  membershipChartCtrl.parseTransactions = function () {
-    if (angular.equals(membershipChartCtrl.transactions.data, membershipChartCtrl.displayedTransactions)) {
-      return;
-    }
-    membershipChartCtrl.displayedTransactions = angular.copy(membershipChartCtrl.transactions.data);
-    var filteredTransactions = {};
-    var startDate = Date.parse(membershipChartCtrl.startDate);
-    var endDate = Date.parse(membershipChartCtrl.endDate);
+    membershipChartCtrl.chartLabels = Object.keys(membershipChartCtrl.displayedTransactions);
 
-    for (var dateStr in membershipChartCtrl.displayedTransactions) {
-      var date = Date.parse(dateStr);
-      var skip = false;
-      if (startDate && date < startDate) {
-        skip = true;
-      }
-      if (endDate && date > endDate) {
-        skip = true;
-      }
-      if (!skip) {
-        filteredTransactions[date] = membershipChartCtrl.displayedTransactions[dateStr];
-      }
-    }
-
-    membershipChartCtrl.chartLabels = Object.keys(filteredTransactions).map(function (date) {
-      return new Date(parseInt(date)).toDateString();
-    });
-
-    Object.values(filteredTransactions).map(function (transactions) {
+    Object.values(membershipChartCtrl.displayedTransactions).map(function (transactions) {
       var transactionCount = transactions.length;
       var netDollars = transactions.reduce(function (accumulator, transaction) {
-        accumulator = accumulator + (transaction.debit_amt - transaction.credit_amt);
+        accumulator = accumulator + (transaction.net_amt);
         return accumulator;
       }, 0);
       var averageDollars = netDollars / transactionCount;
-      membershipChartCtrl.netDollarsData[0].push(netDollars);
-      membershipChartCtrl.countData[0].push(transactionCount);
-      membershipChartCtrl.averageDollarsData[0].push(averageDollars);
+      netData.push(netDollars);
+      countData.push(transactionCount);
+      averageData.push(averageDollars);
     });
+    membershipChartCtrl.netDollarsData = [netData];
+    membershipChartCtrl.countData = [countData];
+    membershipChartCtrl.averageDollarsData = [averageData];
   };
 
   membershipChartCtrl.setOptions = function () {
