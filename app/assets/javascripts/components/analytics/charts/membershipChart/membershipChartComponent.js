@@ -14,6 +14,7 @@ app.component('membershipChartComponent', {
 function membershipChartController() {
   var membershipChartCtrl = this;
   membershipChartCtrl.$onInit = function() {
+    membershipChartCtrl.initDatasetKey = angular.copy(membershipChartCtrl.datasetKey);
     membershipChartCtrl.dataSource = 'transactions';
     membershipChartCtrl.groupBy = 'month';
     membershipChartCtrl.netDollarsData = [[]];
@@ -57,7 +58,7 @@ function membershipChartController() {
   };
 
   membershipChartCtrl.getDataParams = function (){
-    return {
+    var params = {
       source: membershipChartCtrl.dataSource,
       params: {
         type: membershipChartCtrl.datasetKey,
@@ -66,6 +67,8 @@ function membershipChartController() {
         endDate: membershipChartCtrl.endDate
       }
     };
+    membershipChartCtrl.datasetKey = membershipChartCtrl.initDatasetKey;
+    return params;
   };
 
   membershipChartCtrl.loadAndParseData = function () {
