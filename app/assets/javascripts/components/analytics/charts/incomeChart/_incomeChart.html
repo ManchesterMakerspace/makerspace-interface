@@ -3,7 +3,7 @@
     <div class="col-xs-4">
       <md-input-container class="md-block">
          <label>Filter Categories</label>
-         <md-select ng-model="includedLabels" md-on-open="includedLabels = incomeChartCtrl.includedLabels" multiple>
+         <md-select ng-model="includedLabels" md-on-open="includedLabels = incomeChartCtrl.chartLabels" multiple>
            <md-option ng-repeat="label in incomeChartCtrl.allLabels"
             ng-click="incomeChartCtrl.updateLabels(label)"
             ng-selected="!incomeChartCtrl.includeLabel(label)"

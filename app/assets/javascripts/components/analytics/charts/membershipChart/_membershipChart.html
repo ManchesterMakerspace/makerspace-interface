@@ -13,8 +13,17 @@
       <md-input-container class="md-block">
          <label>Dataset</label>
          <md-select ng-model="membershipChartCtrl.datasetKey" ng-change="membershipChartCtrl.reloadData(membershipChartCtrl.getDataParams())">
-           <md-option ng-repeat="option in membershipChartCtrl.datasetOptions"
-            ng-value="option.key">{{option.label}}</md-option>
+           <md-select-header>
+             <strong> Income Sources: </strong>
+           </md-select-header>
+           <md-option ng-repeat="option in membershipChartCtrl.datasetOptions | filter: {type: 'Income'}"
+            ng-value="option.key">{{option.displayName}}</md-option>
+
+            <md-select-header>
+              <strong> Expense Sources: </strong>
+            </md-select-header>
+            <md-option ng-repeat="option in membershipChartCtrl.datasetOptions | filter: {type: 'Expense'}"
+             ng-value="option.key">{{option.displayName}}</md-option>
          </md-select>
        </md-input-container>
     </div>

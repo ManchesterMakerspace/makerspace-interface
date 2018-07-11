@@ -8,44 +8,46 @@ app.component('analyticsComponent', {
 
 var DATA_MAP = {
   members: {
+    displayName: "Membership Dues",
     categoryName: "Membership Dues - Program Income",
-    key: "member",
-    type: "Income"
+    key: "members",
+    type: "income"
   },
   rentals: {
+    displayName: "Rentals",
     categoryName: "Plot Rental - Program Service Fees",
     key: "rentals",
-    type: "Income"
+    type: "income"
   },
   classes: {
+    displayName: "Classes",
     categoryName: "Classes - Program Service Dues",
     key: "classes",
-    type: "Income"
+    type: "income"
   },
   income: {
+    displayName: "All Incomes",
     categoryName: "All Income",
     key: "income",
-    type: "Income"
+    type: "income"
   },
   utilities: {
+    displayName: "Utilities",
     categoryName: "Utilities",
     key: "utilities",
-    type: "Expense"
+    type: "expense"
   },
   shops: {
+    displayName: "Shop Expenses",
     categoryName: "Shop Expense",
     key: "shops",
-    type: "Expense"
+    type: "expense"
   },
   expense: {
+    displayName: "All Expenses",
     categoryName: "All Expense",
     key: "expense",
-    type: "Expense"
-  },
-  iKCAD: {
-    categoryName: "In-Kind Current Asset Donation",
-    key: "iKCAD",
-    type: "Income"
+    type: "expense"
   },
 };
 
@@ -81,10 +83,8 @@ function analyticsController(analyticsService) {
     analyticsCtrl.groupTransactionsBy = Object.keys(GROUP_TRANSACTIONS_BY).map(function (key) {
       return GROUP_TRANSACTIONS_BY[key];
     });
-    analyticsCtrl.datasetOptions = Object.keys(DATA_MAP).map(function (key) {
-      return { key: key, label: DATA_MAP[key].categoryName };
-    });
-    analyticsCtrl.charts = ["members"];
+    analyticsCtrl.datasetOptions = Object.values(DATA_MAP);
+    analyticsCtrl.charts = [DATA_MAP.members];
     analyticsCtrl.income = {
       members: {
         isRequesting: false,
@@ -168,13 +168,13 @@ function analyticsController(analyticsService) {
   };
 
   analyticsCtrl.updateChart = function (params) {
-    var existingChartIndex = analyticsCtrl.charts.findIndex(function (chartName) {
-      return chartName === params.type;
+    var existingChartIndex = analyticsCtrl.charts.findIndex(function (chart) {
+      return chart.key === params.type;
     });
     if (existingChartIndex > -1) {
       analyticsCtrl.selectedIndex = existingChartIndex;
     } else {
-      analyticsCtrl.charts.push(params.type);
+      analyticsCtrl.charts.push(DATA_MAP[params.type]);
       analyticsCtrl.selectedIndex = analyticsCtrl.charts.length - 1;
     }
   };
