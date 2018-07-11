@@ -1,46 +1,37 @@
-<div class="col-xs-12">
+<div class="col-xs-12 analytics">
   <div class="row">
     <div class="col-xs-12">
-      <md-tabs md-dynamic-height md-border-bottom md-selected="analyticsCtrl.selectedIncomeIndex">
-        <md-tab label="Membership" md-on-select="analyticsCtrl.getTransactions('members')">
+      <md-tabs md-dynamic-height md-border-bottom md-selected="analyticsCtrl.selectedIndex">
+        <md-tab label="{{chart}}" md-on-select="analyticsCtrl.getTransactions(chart)" ng-repeat="chart in analyticsCtrl.charts track by $index">
           <md-content class="md-padding">
-            <membership-chart-component transactions="analyticsCtrl.income.members" ng-show="analyticsCtrl.selectedIncomeIndex == 0"/>
+            <membership-chart-component chart-data="analyticsCtrl.income[chart]"
+            group-data-options="analyticsCtrl.groupTransactionsBy"
+            dataset-key="chart"
+            dataset-options="analyticsCtrl.datasetOptions"
+            reload-data="analyticsCtrl.reloadData(source, params)"
+            ng-show="analyticsCtrl.selectedIndex === $index"/>
           </md-content>
         </md-tab>
-        <md-tab label="Rentals" md-on-select="analyticsCtrl.getTransactions('rentals')">
+
+        <md-tab label="Income" md-on-select="analyticsCtrl.getCategories('income')">
           <md-content class="md-padding">
-            <!-- <rentals-chart-component transactions="analyticsCtrl.incomeData" ng-if="analyticsCtrl.income.dataset == 'rentals'"/> -->
+            <income-chart-component chart-data="analyticsCtrl.income.income"
+            group-data-options="analyticsCtrl.groupTransactionsBy"
+            dataset-key="'income'"
+            dataset-options="analyticsCtrl.datasetOptions"
+            reload-data="analyticsCtrl.reloadData(source, params)"
+            ng-show="analyticsCtrl.selectedIndex === (analyticsCtrl.charts.length)"/>
           </md-content>
         </md-tab>
-        <md-tab label="Classes" md-on-select="analyticsCtrl.getTransactions('classes')">
+
+        <md-tab label="Expense" md-on-select="analyticsCtrl.getCategories('expense')">
           <md-content class="md-padding">
-            <!-- <classes-chart-component transactions="analyticsCtrl.incomeData" ng-if="analyticsCtrl.income.dataset == 'classes'"/> -->
-          </md-content>
-        </md-tab>
-        <md-tab label="Income By Source" md-on-select="analyticsCtrl.getCategories('income')">
-          <md-content class="md-padding">
-            <income-chart-component income="analyticsCtrl.income.income" ng-show="analyticsCtrl.selectedIncomeIndex == 3"/>
-          </md-content>
-        </md-tab>
-      </md-tabs>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-xs-12">
-      <md-tabs md-dynamic-height md-border-bottom md-selected="analyticsCtrl.selectedExpenseIndex">
-        <md-tab label="Utilities" md-on-select="analyticsCtrl.getTransactions('utilities')">
-          <md-content class="md-padding">
-            <!-- <utilities-chart-component categories="analyticsCtrl.expenseData" ng-if="analyticsCtrl.expense.dataset == 'utilities'"/> -->
-          </md-content>
-        </md-tab>
-        <md-tab label="Shop Expense" md-on-select="analyticsCtrl.getTransactions('shops')">
-          <md-content class="md-padding">
-            <!-- <shop-chart-component categories="analyticsCtrl.expenseData" ng-if="analyticsCtrl.expense.dataset == 'shops'"/> -->
-          </md-content>
-        </md-tab>
-        <md-tab label="Expenses By Source" md-on-select="analyticsCtrl.getCategories('expense')">
-          <md-content class="md-padding">
-            <!-- <expense-chart-component categories="analyticsCtrl.expenseData" ng-if="analyticsCtrl.expense.dataset == 'expense'"/> -->
+            <income-chart-component chart-data="analyticsCtrl.expense.expense"
+            group-data-options="analyticsCtrl.groupTransactionsBy"
+            dataset-key="'expense'"
+            dataset-options="analyticsCtrl.datasetOptions"
+            reload-data="analyticsCtrl.reloadData(source, params)"
+            ng-show="analyticsCtrl.selectedIndex === (analyticsCtrl.charts.length + 1)"/>
           </md-content>
         </md-tab>
       </md-tabs>

@@ -3,7 +3,7 @@ class VirtualAccountant::Category
   include VirtualAccountant
   store_in collection: "categories", database: "makerspace_accounting", client: "accounting"
 
-  attr_accessor :csv_row
+  attr_accessor :csv_row, :calculated_net
   attr_reader :balance
 
   field :name, type: String
@@ -24,7 +24,10 @@ class VirtualAccountant::Category
     "Cash on Hand",
     "Paypal",
     "Bluebird",
-    "Northway Bank"
+    "Northway Bank",
+    "In-Kind Current Asset Donation",
+    "In-Kind Fixed Asset Donations",
+    "Fixed Asset Purchase",
   ]
 
   def self.start_new_category?(record_description)
@@ -35,21 +38,27 @@ class VirtualAccountant::Category
     record_description == "Net Movement"
   end
 
-  def self.find_by_type(type)
-    self.where(transaction_type: type).not_in(name: BANK_ACCOUNNTS)
+  def self.find_by_type(type, start_date=nil, end_date=nil)
+    self.where(transaction_type: type).not_in(name: BANK_ACCOUNNTS).map do |category|
+      found_transactions = category.transactions
+      found_transactions = found_transactions.where(:transaction_date.gt => start_date) if start_date
+      found_transactions = found_transactions.where(:transaction_date.lt => end_date) if end_date
+      category.calculated_net = found_transactions ? self.sum_transactions(found_transactions) : 0
+      category
+    end
   end
 
   def determine_transaction_type
-    expenses = self.transactions.select {|t| t.type == "expense"}.count
-    incomes = self.transactions.select {|t| t.type == "income"}.count
-    expenses >= incomes ? "expense" : "income"
+    expenses = self.class.sum_transactions(self.transactions.select {|t| t.type == "expense"}).abs
+    incomes = self.class.sum_transactions(self.transactions.select {|t| t.type == "income"}).abs
+    expenses > incomes ? "expense" : "income"
   end
 
   def parse_total(csv_row)
     return unless csv_row.first =~ Regexp.new("^(Total #{self.name})")
     *, debit, credit = csv_row
-    self.reported_debit = from_currency(debit).round(2)
-    self.reported_credit = from_currency(credit).round(2)
+    self.reported_debit = from_currency(debit)
+    self.reported_credit = from_currency(credit)
   end
 
   def parse_net(csv_row)
@@ -58,10 +67,10 @@ class VirtualAccountant::Category
     if net_amt.gsub!(/^\(|\)$/, '')
       net_amt = -net_amt
     end
-    return net_amt
+    return from_currency(net_amt)
   end
 
-  def balance
-    return self.transactions.reduce(0) { |sum, transaction| sum += transaction.net_amt }.round(2)
+  def self.sum_transactions(current_transactions)
+    return current_transactions.reduce(0) { |sum, transaction| sum += transaction.net_amt }.round(2)
   end
 end
