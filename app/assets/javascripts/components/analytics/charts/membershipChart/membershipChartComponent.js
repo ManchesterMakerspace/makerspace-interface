@@ -23,19 +23,28 @@ function membershipChartController() {
     membershipChartCtrl.selectedIndex = 0;
     membershipChartCtrl.chartOptions = {
       netDollars: {
-        title: "Total Monthly Membership Dues",
+        title: "Total Monthly ",
         xLabel: "Month",
-        yLabel: "Net $"
+        yLabel: "Net $",
+        tooltipFunction: function (tooltipItem) {
+          return " $" + tooltipItem.yLabel.toFixed(2);
+        }
       },
       averageDollars: {
-        title: "Average Monthly Membership Dues",
+        title: "Average Monthly ",
         xLabel: "Month",
-        yLabel: "Average $"
+        yLabel: "Average $",
+        tooltipFunction: function (tooltipItem) {
+          return " $" + tooltipItem.yLabel.toFixed(2);
+        }
       },
       totalCount: {
-        title: "Total Number Membership Payments",
+        title: "Total Number Transactions - ",
         xLabel: "Month",
-        yLabel: "Total"
+        yLabel: "Total",
+        tooltipFunction: function (tooltipItem) {
+          return " " + tooltipItem.yLabel;
+        }
       },
     };
 
@@ -66,8 +75,12 @@ function membershipChartController() {
         return;
       }
       membershipChartCtrl.currentData = incomingData;
-
+      var activeDataset = membershipChartCtrl.datasetOptions.find(function (option) {
+        return option.key === membershipChartCtrl.datasetKey;
+      });
+      membershipChartCtrl.currentChartTitle = activeDataset && activeDataset.displayName;
       membershipChartCtrl.parseData();
+      membershipChartCtrl.setOptions();
     }
   };
 
@@ -98,10 +111,11 @@ function membershipChartController() {
   membershipChartCtrl.setOptions = function () {
     var targetChartKey = Object.keys(membershipChartCtrl.chartOptions)[membershipChartCtrl.selectedIndex];
     var targetChart = membershipChartCtrl.chartOptions[targetChartKey];
+    var chartTitle = targetChart.title + (membershipChartCtrl.currentChartTitle ? membershipChartCtrl.currentChartTitle : "");
     membershipChartCtrl.options = {
       title: {
         display: true,
-        text: targetChart.title,
+        text: chartTitle,
         fontSize: 16
       },
       scales: {
@@ -117,6 +131,13 @@ function membershipChartController() {
             labelString: targetChart.xLabel
           }
         }]
+      },
+      tooltips: {
+        callbacks: {
+          label: (tooltipItem) => {
+            return targetChart.tooltipFunction(tooltipItem);
+          }
+        }
       }
     };
   };

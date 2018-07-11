@@ -2,11 +2,11 @@
   <div class="row">
     <div class="col-xs-12">
       <md-tabs md-dynamic-height md-border-bottom md-selected="analyticsCtrl.selectedIndex">
-        <md-tab label="{{chart}}" md-on-select="analyticsCtrl.getTransactions(chart)" ng-repeat="chart in analyticsCtrl.charts track by $index">
+        <md-tab label="{{chart.displayName}}" md-on-select="analyticsCtrl.getTransactions(chart.key)" ng-repeat="chart in analyticsCtrl.charts track by $index">
           <md-content class="md-padding">
-            <membership-chart-component chart-data="analyticsCtrl.income[chart]"
+            <membership-chart-component chart-data="analyticsCtrl[chart.type][chart.key]"
             group-data-options="analyticsCtrl.groupTransactionsBy"
-            dataset-key="chart"
+            dataset-key="chart.key"
             dataset-options="analyticsCtrl.datasetOptions"
             reload-data="analyticsCtrl.reloadData(source, params)"
             ng-show="analyticsCtrl.selectedIndex === $index"/>
