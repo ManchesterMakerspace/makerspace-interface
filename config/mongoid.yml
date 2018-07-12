@@ -37,14 +37,24 @@ development:
     # otherwise.(default: :info)
     # log_level: :info
 production:
+  # Configure available database clients. (required)
   clients:
+    # Defines the default client. (required)
       default:
         uri: <%=ENV['MLAB_URI']%>
+      # payments:
+      #   uri: <%=ENV['MLAB_URI']%>
   options:
     raise_not_found_error: false
 test:
   clients:
     default:
-      uri: <%=ENV['MLAB_URI']%>
+      database: member_interface_test
+      hosts:
+        - localhost:27017
+      options:
+        read:
+          mode: :primary
+        max_pool_size: 1
   options:
     raise_not_found_error: false

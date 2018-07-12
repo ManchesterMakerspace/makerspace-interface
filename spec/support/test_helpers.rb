@@ -1,7 +1,5 @@
 module TestHelpers
   def clear_email
-    Dir.mkdir('tmp') unless Dir.exist?('tmp')
-    Dir.mkdir('tmp/mail') unless Dir.exist?('tmp/mail')
     dir_path  = Rails.root.join("tmp/mail")
     Dir.foreach(dir_path) do |f|
       fn = File.join(dir_path, f)

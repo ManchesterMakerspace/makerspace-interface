@@ -20,6 +20,7 @@ old-config.json
 /node_modules
 /public
 /public-coverage
+start.sh
 
 # TODO Comment out this rule if you are OK with secrets being uploaded to the repo
 config/initializers/secret_token.rb
@@ -56,5 +57,4 @@ test.env
 
 # Reporter file for integration  tests and screenshots
 /spec/frontend/test_results
-/spec/rspec_results.html
 /spec/frontend/reporter
