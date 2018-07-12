@@ -1,20 +1,8 @@
 {
   "name": "vendor-assets",
   "dependencies": {
-    "angular": "=1.6.4",
-    "angular-animate": "=1.6.4",
-    "angular-mocks": "=1.6.4",
-    "angular-sanitize": "=1.6.4",
-    "angular-ui-router": ">=1.x",
-    "angular-bootstrap": "=2.5.0",
-    "angular-material": "^1.1.4",
-    "angular-messages": "latest",
     "angular-devise": "latest",
-    "angular-signature": "latest",
-    "angular-cookie": "latest",
+    "angular-bootstrap": "latest",
     "chart.js": "^2.7.2"
-  },
-  "resolutions": {
-    "angular": "1.6.4"
   }
 }
