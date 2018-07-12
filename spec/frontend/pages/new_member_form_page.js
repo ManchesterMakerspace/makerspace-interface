@@ -9,7 +9,6 @@ var NewMemberFormPage = function () {
   var renewalMonthsInput = element(by.model("newMemberCtrl.newMember.renewal"));
   var renewalMonthsOptions = element.all(by.css(".renewal-option"));
   var emailInput = element(by.model("newMemberCtrl.newMember.email"));
-  var emailError = element(by.css('[ng-messages="newMember.firstname.$error"]'));
   var passwordInput = element(by.model("newMemberCtrl.newMember.password"));
   var passwordConfirmationInput = element(by.model("newMemberCtrl.newMember.password_confirmation"));
   var submit = element(by.css('button[type="submit"]'));
@@ -30,7 +29,7 @@ var NewMemberFormPage = function () {
   }
   this.setInput = function (input, content) {
     var el = eval(input + "Input");
-    return el.clear().sendKeys(content).sendKeys(protractor.Key.TAB);
+    return el.clear().sendKeys(content);
   };
   this.getInput = function (input) {
     var el = eval(input + "Input");
@@ -66,13 +65,7 @@ var NewMemberFormPage = function () {
   };
   this.inputValid = function (inputName) {
     var el = eval(inputName + "Input");
-    if (el === emailInput) {
-      return protractor.pageHelper.isDisplayed(emailError).then(function (d) {
-        return !d;
-      });
-    } else {
-      return protractor.pageHelper.inputValid(el);
-    }
+    return protractor.pageHelper.inputValid(el);
   };
 };
 

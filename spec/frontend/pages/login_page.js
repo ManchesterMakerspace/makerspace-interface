@@ -23,13 +23,13 @@ var LoginPage = function () {
     return emailInput.getAttribute('value');
   };
   this.setEmail = function (email) {
-    return emailInput.clear().sendKeys(email).sendKeys(protractor.Key.TAB);
+    return emailInput.clear().sendKeys(email);
   };
   this.getPassword = function () {
     return passwordInput.getAttribute('value');
   };
   this.setPassword = function (password) {
-    return passwordInput.clear().sendKeys(password).sendKeys(protractor.Key.TAB);
+    return passwordInput.clear().sendKeys(password);
   };
   this.submitLogin = function () {
     return submitButton.click();
