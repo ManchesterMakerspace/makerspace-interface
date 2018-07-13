@@ -158,9 +158,9 @@ function analyticsController(analyticsService) {
   analyticsCtrl.reloadData = function (source, params) {
     var grouping = GROUP_TRANSACTIONS_BY[params.grouping];
     if (source === 'transactions') {
-      analyticsCtrl.getTransactions(params.type, grouping, params.startDate, params.endDate);
+      analyticsCtrl.getTransactions(params.type, grouping && grouping.key, params.startDate, params.endDate);
     } else if (source === 'categories') {
-      analyticsCtrl.getCategories(params.type, grouping, params.startDate, params.endDate);
+      analyticsCtrl.getCategories(params.type, grouping && grouping.key, params.startDate, params.endDate);
     }
     if (params.type !== 'income' && params.type !== 'expense') {
       analyticsCtrl.updateChart(params);

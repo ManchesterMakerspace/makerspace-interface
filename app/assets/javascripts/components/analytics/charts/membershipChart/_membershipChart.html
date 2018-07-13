@@ -3,7 +3,8 @@
     <div class="col-xs-3">
       <md-input-container class="md-block">
          <label>Group Transactions By</label>
-         <md-select ng-model="membershipChartCtrl.groupBy" ng-change="membershipChartCtrl.reloadData(membershipChartCtrl.getDataParams())">
+         <md-select ng-model="membershipChartCtrl.groupBy"
+            ng-change="membershipChartCtrl.reloadData(membershipChartCtrl.getDataParams())">
            <md-option ng-repeat="option in membershipChartCtrl.groupDataOptions"
             ng-value="option.key">{{option.label}}</md-option>
          </md-select>
