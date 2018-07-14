@@ -3,8 +3,8 @@
     <div class="col-xs-3">
       <md-input-container class="md-block">
          <label>Group Transactions By</label>
-         <md-select ng-model="membershipChartCtrl.groupBy" ng-change="membershipChartCtrl.reloadData(membershipChartCtrl.getDataParams())">
-           <md-option ng-repeat="option in membershipChartCtrl.groupDataOptions"
+         <md-select ng-model="transactionChartCtrl.groupBy" ng-change="transactionChartCtrl.reloadData(transactionChartCtrl.getDataParams())">
+           <md-option ng-repeat="option in transactionChartCtrl.groupDataOptions"
             ng-value="option.key">{{option.label}}</md-option>
          </md-select>
        </md-input-container>
@@ -12,17 +12,17 @@
     <div class="col-xs-3">
       <md-input-container class="md-block">
          <label>Dataset</label>
-         <md-select ng-model="membershipChartCtrl.datasetKey" ng-change="membershipChartCtrl.reloadData(membershipChartCtrl.getDataParams())">
+         <md-select ng-model="transactionChartCtrl.datasetKey" ng-change="transactionChartCtrl.reloadData(transactionChartCtrl.getDataParams())">
            <md-select-header>
              <strong> Income Sources: </strong>
            </md-select-header>
-           <md-option ng-repeat="option in membershipChartCtrl.datasetOptions | filter: {type: 'Income'}"
+           <md-option ng-repeat="option in transactionChartCtrl.datasetOptions | filter: {type: 'Income'}"
             ng-value="option.key">{{option.displayName}}</md-option>
 
             <md-select-header>
               <strong> Expense Sources: </strong>
             </md-select-header>
-            <md-option ng-repeat="option in membershipChartCtrl.datasetOptions | filter: {type: 'Expense'}"
+            <md-option ng-repeat="option in transactionChartCtrl.datasetOptions | filter: {type: 'Expense'}"
              ng-value="option.key">{{option.displayName}}</md-option>
          </md-select>
        </md-input-container>
@@ -32,9 +32,9 @@
         <label for="startDate">Start Date</label>
         <md-datepicker name="startDate" id="startDate"
           md-open-on-focus
-          mg-mode="membershipChartCtrl.grouping"
-          ng-change="membershipChartCtrl.reloadData(membershipChartCtrl.getDataParams())"
-          ng-model="membershipChartCtrl.startDate"/>
+          mg-mode="transactionChartCtrl.grouping"
+          ng-change="transactionChartCtrl.reloadData(transactionChartCtrl.getDataParams())"
+          ng-model="transactionChartCtrl.startDate"/>
       </md-input-container>
     </div>
     <div class="col-xs-3">
@@ -42,53 +42,53 @@
         <label for="endDate">End Date</label>
         <md-datepicker name="endDate" id="endDate"
           md-open-on-focus
-          mg-mode="membershipChartCtrl.grouping"
-          ng-change="membershipChartCtrl.reloadData(membershipChartCtrl.getDataParams())"
-          ng-model="membershipChartCtrl.endDate"/>
+          mg-mode="transactionChartCtrl.grouping"
+          ng-change="transactionChartCtrl.reloadData(transactionChartCtrl.getDataParams())"
+          ng-model="transactionChartCtrl.endDate"/>
       </md-input-container>
     </div>
   </div>
 
-  <md-tabs md-dynamic-height md-border-bottom md-selected="membershipChartCtrl.selectedIndex"
-   ng-if="!membershipChartCtrl.income.isRequesting">
-    <md-tab label="Net Dollars" md-on-select="membershipChartCtrl.setOptions()">
+  <md-tabs md-dynamic-height md-border-bottom md-selected="transactionChartCtrl.selectedIndex"
+   ng-if="!transactionChartCtrl.income.isRequesting">
+    <md-tab label="Net Dollars" md-on-select="transactionChartCtrl.setOptions()">
       <md-content class="md-padding">
         <div class= "col-xs-12">
           <canvas class="chart chart-bar"
-            chart-data="membershipChartCtrl.netDollarsData"
-            chart-labels="membershipChartCtrl.chartLabels"
-            chart-options="membershipChartCtrl.options"
+            chart-data="transactionChartCtrl.netDollarsData"
+            chart-labels="transactionChartCtrl.chartLabels"
+            chart-options="transactionChartCtrl.options"
             width="1000"
             height="500"></canvas>
         </div>
       </md-content>
     </md-tab>
-    <md-tab label="Average Dollars" md-on-select="membershipChartCtrl.setOptions()">
+    <md-tab label="Average Dollars" md-on-select="transactionChartCtrl.setOptions()">
       <md-content class="md-padding">
         <div class= "col-xs-12">
           <canvas class="chart chart-bar"
-            chart-data="membershipChartCtrl.averageDollarsData"
-            chart-labels="membershipChartCtrl.chartLabels"
-            chart-options="membershipChartCtrl.options"
+            chart-data="transactionChartCtrl.averageDollarsData"
+            chart-labels="transactionChartCtrl.chartLabels"
+            chart-options="transactionChartCtrl.options"
             width="1000"
             height="500"></canvas>
         </div>
       </md-content>
     </md-tab>
-    <md-tab label="Count" md-on-select="membershipChartCtrl.setOptions()">
+    <md-tab label="Count" md-on-select="transactionChartCtrl.setOptions()">
       <md-content class="md-padding">
         <div class="col-xs-12">
           <canvas class="chart chart-bar"
-            chart-data="membershipChartCtrl.countData"
-            chart-labels="membershipChartCtrl.chartLabels"
-            chart-options="membershipChartCtrl.options"
+            chart-data="transactionChartCtrl.countData"
+            chart-labels="transactionChartCtrl.chartLabels"
+            chart-options="transactionChartCtrl.options"
             width="1000"
             height="500"></canvas>
         </div>
       </md-content>
     </md-tab>
   </md-tabs>
-  <div ng-if="membershipChartCtrl.income.isRequesting">
+  <div ng-if="transactionChartCtrl.income.isRequesting">
     Loading
   </div>
 </div>

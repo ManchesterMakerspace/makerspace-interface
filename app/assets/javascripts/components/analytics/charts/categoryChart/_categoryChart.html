@@ -3,10 +3,10 @@
     <div class="col-xs-4">
       <md-input-container class="md-block">
          <label>Filter Categories</label>
-         <md-select ng-model="includedLabels" md-on-open="includedLabels = incomeChartCtrl.chartLabels" multiple>
-           <md-option ng-repeat="label in incomeChartCtrl.allLabels"
-            ng-click="incomeChartCtrl.updateLabels(label)"
-            ng-selected="!incomeChartCtrl.includeLabel(label)"
+         <md-select ng-model="includedLabels" md-on-open="includedLabels = categoryChartCtrl.chartLabels" multiple>
+           <md-option ng-repeat="label in categoryChartCtrl.allLabels"
+            ng-click="categoryChartCtrl.updateLabels(label)"
+            ng-selected="!categoryChartCtrl.includeLabel(label)"
             ng-value="label">{{label}}</md-option>
          </md-select>
        </md-input-container>
@@ -16,8 +16,8 @@
         <label for="startDate">Start Date</label>
         <md-datepicker name="startDate" id="startDate"
           md-open-on-focus
-          ng-change="incomeChartCtrl.reloadData(incomeChartCtrl.getCategoryParams())"
-          ng-model="incomeChartCtrl.startDate"/>
+          ng-change="categoryChartCtrl.reloadData(categoryChartCtrl.getCategoryParams())"
+          ng-model="categoryChartCtrl.startDate"/>
       </md-input-container>
     </div>
     <div class="col-xs-4">
@@ -25,33 +25,33 @@
         <label for="endDate">End Date</label>
         <md-datepicker name="endDate" id="endDate"
           md-open-on-focus
-          ng-change="incomeChartCtrl.reloadData(incomeChartCtrl.getCategoryParams())"
-          ng-model="incomeChartCtrl.endDate"/>
+          ng-change="categoryChartCtrl.reloadData(categoryChartCtrl.getCategoryParams())"
+          ng-model="categoryChartCtrl.endDate"/>
       </md-input-container>
     </div>
   </div>
   <div class="row">
     <div class="col-xs-12">
-      <md-tabs md-dynamic-height md-border-bottom md-selected="incomeChartCtrl.selectedIndex"
-      ng-if="!incomeChartCtrl.income.isRequesting">
-        <md-tab label="Net Dollars" md-on-select="incomeChartCtrl.setOptions()">
+      <md-tabs md-dynamic-height md-border-bottom md-selected="categoryChartCtrl.selectedIndex"
+      ng-if="!categoryChartCtrl.income.isRequesting">
+        <md-tab label="Net Dollars" md-on-select="categoryChartCtrl.setOptions()">
           <md-content class="md-padding">
             <div class= "col-xs-12">
               <canvas class="chart chart-doughnut"
-                chart-data="incomeChartCtrl.netDollarsData"
-                chart-labels="incomeChartCtrl.chartLabels"
-                chart-options="incomeChartCtrl.options"
+                chart-data="categoryChartCtrl.netDollarsData"
+                chart-labels="categoryChartCtrl.chartLabels"
+                chart-options="categoryChartCtrl.options"
                 width="1000"
                 height="500"></canvas>
             </div>
           </md-content>
         </md-tab>
-        <md-tab label="Average Dollars" md-on-select="incomeChartCtrl.setOptions()">
+        <md-tab label="Average Dollars" md-on-select="categoryChartCtrl.setOptions()">
           <md-content class="md-padding">
             <div class= "col-xs-12">
               <!-- <canvas class="chart chart-doughnut"
-                chart-data="incomeChartCtrl.averageDollarsData"
-                chart-labels="incomeChartCtrl.chartLabels"
+                chart-data="categoryChartCtrl.averageDollarsData"
+                chart-labels="categoryChartCtrl.chartLabels"
                 width="1000"
                 height="500"></canvas> -->
             </div>

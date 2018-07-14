@@ -1,40 +1,7 @@
 <div class="col-xs-12 analytics">
   <div class="row">
     <div class="col-xs-12">
-      <md-tabs md-dynamic-height md-border-bottom md-selected="analyticsCtrl.selectedIndex">
-        <md-tab label="{{chart.displayName}}" md-on-select="analyticsCtrl.getTransactions(chart.key)" ng-repeat="chart in analyticsCtrl.charts track by $index">
-          <md-content class="md-padding">
-            <membership-chart-component chart-data="analyticsCtrl[chart.type][chart.key]"
-            group-data-options="analyticsCtrl.groupTransactionsBy"
-            dataset-key="chart.key"
-            dataset-options="analyticsCtrl.datasetOptions"
-            reload-data="analyticsCtrl.reloadData(source, params)"
-            ng-show="analyticsCtrl.selectedIndex === $index"/>
-          </md-content>
-        </md-tab>
-
-        <md-tab label="Income" md-on-select="analyticsCtrl.getCategories('income')">
-          <md-content class="md-padding">
-            <income-chart-component chart-data="analyticsCtrl.income.income"
-            group-data-options="analyticsCtrl.groupTransactionsBy"
-            dataset-key="'income'"
-            dataset-options="analyticsCtrl.datasetOptions"
-            reload-data="analyticsCtrl.reloadData(source, params)"
-            ng-show="analyticsCtrl.selectedIndex === (analyticsCtrl.charts.length)"/>
-          </md-content>
-        </md-tab>
-
-        <md-tab label="Expense" md-on-select="analyticsCtrl.getCategories('expense')">
-          <md-content class="md-padding">
-            <income-chart-component chart-data="analyticsCtrl.expense.expense"
-            group-data-options="analyticsCtrl.groupTransactionsBy"
-            dataset-key="'expense'"
-            dataset-options="analyticsCtrl.datasetOptions"
-            reload-data="analyticsCtrl.reloadData(source, params)"
-            ng-show="analyticsCtrl.selectedIndex === (analyticsCtrl.charts.length + 1)"/>
-          </md-content>
-        </md-tab>
-      </md-tabs>
+      <charts-component/>
     </div>
   </div>
 </div>

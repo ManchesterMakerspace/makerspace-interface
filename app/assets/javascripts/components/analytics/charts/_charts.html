@@ -1,0 +1,40 @@
+<div class="col-xs-12 analytics">
+  <div class="row">
+    <div class="col-xs-12">
+      <md-tabs md-dynamic-height md-border-bottom md-selected="chartsCtrl.selectedIndex">
+        <md-tab label="{{chart.displayName}}" md-on-select="chartsCtrl.getTransactions(chart.key)" ng-repeat="chart in chartsCtrl.charts track by $index">
+          <md-content class="md-padding">
+            <transaction-chart-component chart-data="chartsCtrl[chart.type][chart.key]"
+            group-data-options="chartsCtrl.groupTransactionsBy"
+            dataset-key="chart.key"
+            dataset-options="chartsCtrl.datasetOptions"
+            reload-data="chartsCtrl.reloadData(source, params)"
+            ng-show="chartsCtrl.selectedIndex === $index"/>
+          </md-content>
+        </md-tab>
+
+        <md-tab label="Income" md-on-select="chartsCtrl.getCategories('income')">
+          <md-content class="md-padding">
+            <category-chart-component chart-data="chartsCtrl.income.income"
+            group-data-options="chartsCtrl.groupTransactionsBy"
+            dataset-key="'income'"
+            dataset-options="chartsCtrl.datasetOptions"
+            reload-data="chartsCtrl.reloadData(source, params)"
+            ng-show="chartsCtrl.selectedIndex === (chartsCtrl.charts.length)"/>
+          </md-content>
+        </md-tab>
+
+        <md-tab label="Expense" md-on-select="chartsCtrl.getCategories('expense')">
+          <md-content class="md-padding">
+            <category-chart-component chart-data="chartsCtrl.expense.expense"
+            group-data-options="chartsCtrl.groupTransactionsBy"
+            dataset-key="'expense'"
+            dataset-options="chartsCtrl.datasetOptions"
+            reload-data="chartsCtrl.reloadData(source, params)"
+            ng-show="chartsCtrl.selectedIndex === (chartsCtrl.charts.length + 1)"/>
+          </md-content>
+        </md-tab>
+      </md-tabs>
+    </div>
+  </div>
+</div>
