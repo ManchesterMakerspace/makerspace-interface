@@ -12,6 +12,7 @@ RSpec.describe Payment, type: :model do
 
   describe "ActiveModel validations" do
     it { is_expected.to belong_to(:member) }
+    it { is_expected.to validate_uniqueness_of(:txn_id) }
   end
 
   it "has a valid factory" do

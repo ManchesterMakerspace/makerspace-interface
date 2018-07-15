@@ -29,6 +29,13 @@ class VirtualAccountant::Transaction
     dupes = self.where(:$or => transaction_hashes)
   end
 
+  def self.find_for_graph(category, start_date=nil, end_date=nil)
+    query = self.where(transaction_category: category)
+    query = query.where(:transaction_date.gt => start_date) unless start_date.nil?
+    query = query.where(:transaction_date.lt => end_date) unless end_date.nil?
+    query
+  end
+
   private
   def date_is_valid
     errors.add(:transaction_date, "Invalid date string") unless convert_transaction_date
