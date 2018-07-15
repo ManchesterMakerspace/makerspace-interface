@@ -129,11 +129,14 @@ function chartsController(analyticsService) {
 
   chartsCtrl.getTransactions = function (transaction_category, grouping, startDate, endDate) {
     chartsCtrl.setData(transaction_category, [], true);
+    var params = {
+      category: DATA_MAP[transaction_category].categoryName,
+      grouping: grouping || 'month',
+      startDate: startDate && startDate.toISOString() || undefined,
+      endDate: endDate && endDate.toISOString() || undefined
+    };
     return analyticsService.getTransactions(
-      DATA_MAP[transaction_category].categoryName,
-      grouping || 'month',
-      startDate,
-      endDate
+      params
     ).then(function (groupedTransactions) {
       chartsCtrl.setData(transaction_category, angular.copy(groupedTransactions), false);
     }).catch(function (e) {
@@ -143,11 +146,14 @@ function chartsController(analyticsService) {
 
   chartsCtrl.getCategories = function (type, grouping, startDate, endDate) {
     chartsCtrl.setData(type, [], true);
+    var params = {
+      type: type,
+      grouping: grouping || 'month',
+      startDate: startDate && startDate.toISOString() || undefined,
+      endDate: endDate && endDate.toISOString() || undefined
+    };
     return analyticsService.getCategories(
-      type,
-      grouping,
-      startDate,
-      endDate
+      params
     ).then(function (transactions) {
       chartsCtrl.setData(type, angular.copy(transactions), false);
     }).catch(function (e) {

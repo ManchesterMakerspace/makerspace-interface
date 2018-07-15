@@ -4,6 +4,7 @@ app.factory('analyticsService', function($http){
   var accountsPath = "/api/admin/virtual_accountant/accounts";
 
   var assembleGetParams = function (params) {
+    if (!params) { return ""; }
     var url = "";
     if (Object.keys(params)) {
       url += "?";
@@ -18,37 +19,21 @@ app.factory('analyticsService', function($http){
     return url;
   };
 
-  var getTransactions = function (category, grouping, startDate, endDate) {
-    var urlParams = {
-      category: category,
-      startDate: startDate && startDate.toISOString() || undefined,
-      endDate: endDate && endDate.toISOString() || undefined,
-      grouping: grouping,
-    };
+  var getTransactions = function (urlParams) {
     var url = transactionsPath + assembleGetParams(urlParams);
     return $http.get(url).then(function (response) {
       return response.data;
     });
   };
 
-  var getCategories = function (type, grouping, startDate, endDate) {
-    var urlParams = {
-      type: type,
-      startDate: startDate && startDate.toISOString() || undefined,
-      endDate: endDate && endDate.toISOString() || undefined,
-      grouping: grouping,
-    };
+  var getCategories = function (urlParams) {
     var url = categoriesPath + assembleGetParams(urlParams);
     return $http.get(url).then(function (response) {
       return response.data;
     });
   };
 
-  var getAccounts = function (type, grouping, startDate, endDate) {
-    var urlParams = {
-      startDate: startDate && startDate.toISOString() || undefined,
-      endDate: endDate && endDate.toISOString() || undefined,
-    };
+  var getAccounts = function (urlParams) {
     var url = accountsPath + assembleGetParams(urlParams);
     return $http.get(url).then(function (response) {
       return response.data;
