@@ -3,10 +3,10 @@ class Admin::VirtualAccountant::TransactionsController < AdminController
 
   def index
     if transaction_params[:category] then
-      membership_category = ::VirtualAccountant::Category.find_by(name: transaction_params[:category])
-      @transactions = ::VirtualAccountant::Transaction.where(transaction_category: membership_category)
+      category = ::VirtualAccountant::Category.find_by(name: transaction_params[:category])
+      @transactions = ::VirtualAccountant::Transaction.where(category: category)
     else
-      @transactions = ::VirtualAccountant::Transaction
+      @transactions = ::VirtualAccountant::Transaction.all
     end
     case transaction_params[:grouping]
     when 'year'

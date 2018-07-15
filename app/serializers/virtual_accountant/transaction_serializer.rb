@@ -3,6 +3,6 @@ class VirtualAccountant::TransactionSerializer < ActiveModel::Serializer
   # belongs_to :transaction_category, serializer: VirtualAccountant::CategorySerializer, only: [:name]
 
   def category_name
-    object.transaction_category.name
+    object.category.name
   end
 end

@@ -12,7 +12,7 @@ function transactionTableController(analyticsService) {
     analyticsService.getTransactions().then(function (transactions) {
       transactionTableCtrl.transactions = transactions;
     });
-    transactionTableCtrl.sortBy = "transaction_date";
+    transactionTableCtrl.sortedColumn = "transaction_date";
     transactionTableCtrl.reverseSort = true;
     transactionTableCtrl.filter = {};
     transactionTableCtrl.columns = [
@@ -38,7 +38,7 @@ function transactionTableController(analyticsService) {
         header: "Account",
         key: "account_name",
         sort: transactionTableCtrl.changeSort,
-        body: (row) => null
+        body: (row) => row.account_name
       },
       {
         header: "Amount",
@@ -50,6 +50,14 @@ function transactionTableController(analyticsService) {
   };
 
   transactionTableCtrl.changeSort = function (column) {
-    transactionTableCtrl.sortBy = column.key;
+    transactionTableCtrl.sortedColumn = column.key;
+  };
+
+  transactionTableCtrl.sortBy = function (a, b) {
+    if (transactionTableCtrl.sortedColumn === "date") {
+      return new Date(a[transactionTableCtrl.sortedColumn]).getTime() - new Date(b[transactionTableCtrl.sortedColumn]).getTime();
+    } else {
+      return a[transactionTableCtrl.sortedColumn] - b[transactionTableCtrl.sortedColumn];
+    }
   };
 }
