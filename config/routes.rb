@@ -28,6 +28,7 @@ Rails.application.routes.draw do
         namespace :virtual_accountant do
           resources :transactions, only: [:index]
           resources :categories, only: [:index]
+          resources :accounts, only: [:index]
         end
       end
     end

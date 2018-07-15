@@ -4,27 +4,27 @@
       <div class="col-xs-3">
         <md-input-container class="md-block">
            <label>Category</label>
-           <md-select ng-model="transactionTableCtrl.datasetKey" ng-change="transactionTableCtrl.reloadData(transactionTableCtrl.getDataParams())">
+           <md-select ng-model="transactionTableCtrl.categoryFilter" ng-change="transactionTableCtrl.reloadData(transactionTableCtrl.getDataParams())">
              <md-select-header>
                <strong> Income Sources: </strong>
              </md-select-header>
-             <md-option ng-repeat="option in transactionTableCtrl.categories | filter: {type: 'Income'}"
-              ng-value="option.key">{{option.displayName}}</md-option>
+             <md-option ng-repeat="option in transactionTableCtrl.categories | filter: {transaction_type: 'income'}"
+              ng-value="option">{{option.name}}</md-option>
 
               <md-select-header>
                 <strong> Expense Sources: </strong>
               </md-select-header>
-              <md-option ng-repeat="option in transactionTableCtrl.categories | filter: {type: 'Expense'}"
-               ng-value="option.key">{{option.displayName}}</md-option>
+              <md-option ng-repeat="option in transactionTableCtrl.categories | filter: {transaction_type: 'expense'}"
+               ng-value="option">{{option.name}}</md-option>
            </md-select>
          </md-input-container>
       </div>
       <div class="col-xs-3">
         <md-input-container class="md-block">
            <label>Account</label>
-           <md-select ng-model="transactionTableCtrl.datasetKey" ng-change="transactionTableCtrl.reloadData(transactionTableCtrl.getDataParams())">
-             <md-option ng-repeat="option in transactionTableCtrl.accounts | filter: {type: 'Income'}"
-              ng-value="option.key">{{option.displayName}}</md-option>
+           <md-select ng-model="transactionTableCtrl.accountFilter" ng-change="transactionTableCtrl.reloadData(transactionTableCtrl.getDataParams())">
+             <md-option ng-repeat="option in transactionTableCtrl.accounts"
+              ng-value="option">{{option.name}}</md-option>
            </md-select>
          </md-input-container>
       </div>

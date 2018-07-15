@@ -3,22 +3,22 @@ app.component('transactionTableComponent', {
   controller: transactionTableController,
   controllerAs: "transactionTableCtrl",
   bindings: {
+    transactions: '<',
+    accounts: '<',
+    categories: '<',
   }
 });
 
-function transactionTableController(analyticsService) {
+function transactionTableController() {
   var transactionTableCtrl = this;
   transactionTableCtrl.$onInit = function() {
-    analyticsService.getTransactions().then(function (transactions) {
-      transactionTableCtrl.transactions = transactions;
-    });
     transactionTableCtrl.sortedColumn = "transaction_date";
-    transactionTableCtrl.reverseSort = true;
+    transactionTableCtrl.reverseSort = false;
     transactionTableCtrl.filter = {};
     transactionTableCtrl.columns = [
       {
         header: "Date",
-        key: "date",
+        key: "transaction_date",
         sort: transactionTableCtrl.changeSort,
         body: (row) => row.transaction_date
       },
@@ -50,14 +50,19 @@ function transactionTableController(analyticsService) {
   };
 
   transactionTableCtrl.changeSort = function (column) {
-    transactionTableCtrl.sortedColumn = column.key;
+    if (transactionTableCtrl.sortedColumn === column.key) {
+      transactionTableCtrl.reverseSort = !transactionTableCtrl.reverseSort;
+    } else {
+      transactionTableCtrl.sortedColumn = column.key;
+      transactionTableCtrl.reverseSort = false;
+    }
   };
 
-  transactionTableCtrl.sortBy = function (a, b) {
-    if (transactionTableCtrl.sortedColumn === "date") {
-      return new Date(a[transactionTableCtrl.sortedColumn]).getTime() - new Date(b[transactionTableCtrl.sortedColumn]).getTime();
+  transactionTableCtrl.sortBy = function (transaction) {
+    if (transactionTableCtrl.sortedColumn === "transaction_date") {
+      return new Date(transaction[transactionTableCtrl.sortedColumn]).getTime();
     } else {
-      return a[transactionTableCtrl.sortedColumn] - b[transactionTableCtrl.sortedColumn];
+      return transaction[transactionTableCtrl.sortedColumn];
     }
   };
 }

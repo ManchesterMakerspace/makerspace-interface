@@ -1,6 +1,7 @@
 app.factory('analyticsService', function($http){
   var categoriesPath = "/api/admin/virtual_accountant/categories";
   var transactionsPath = "/api/admin/virtual_accountant/transactions";
+  var accountsPath = "/api/admin/virtual_accountant/accounts";
 
   var assembleGetParams = function (params) {
     var url = "";
@@ -43,8 +44,20 @@ app.factory('analyticsService', function($http){
     });
   };
 
+  var getAccounts = function (type, grouping, startDate, endDate) {
+    var urlParams = {
+      startDate: startDate && startDate.toISOString() || undefined,
+      endDate: endDate && endDate.toISOString() || undefined,
+    };
+    var url = accountsPath + assembleGetParams(urlParams);
+    return $http.get(url).then(function (response) {
+      return response.data;
+    });
+  };
+
   return {
     getTransactions: getTransactions,
     getCategories: getCategories,
+    getAccounts: getAccounts,
   };
 });

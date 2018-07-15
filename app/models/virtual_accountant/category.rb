@@ -22,7 +22,13 @@ class VirtualAccountant::Category
   validates :transaction_type, presence: true
 
   def self.find_by_type(type, start_date=nil, end_date=nil)
-    self.where(transaction_type: type).map do |category|
+    search_query = self
+    if type
+      search_query = search_query.where(transaction_type: type)
+    else
+      search_query = search_query.all
+    end
+    search_query.map do |category|
       found_transactions = category.transactions
       found_transactions = found_transactions.where(:transaction_date.gt => start_date) if start_date
       found_transactions = found_transactions.where(:transaction_date.lt => end_date) if end_date
