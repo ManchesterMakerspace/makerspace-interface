@@ -131,7 +131,7 @@ function chartsController(analyticsService) {
     chartsCtrl.setData(transaction_category, [], true);
     return analyticsService.getTransactions(
       DATA_MAP[transaction_category].categoryName,
-      grouping,
+      grouping || 'month',
       startDate,
       endDate
     ).then(function (groupedTransactions) {

@@ -1,8 +1,13 @@
 class Admin::VirtualAccountant::TransactionsController < AdminController
+  @@default_limit = 20
 
-  def charts
-    membership_category = ::VirtualAccountant::Category.find_by(name: transaction_params[:category])
-    @transactions = ::VirtualAccountant::Transaction.where(transaction_category: membership_category)
+  def index
+    if transaction_params[:category] then
+      membership_category = ::VirtualAccountant::Category.find_by(name: transaction_params[:category])
+      @transactions = ::VirtualAccountant::Transaction.where(transaction_category: membership_category)
+    else
+      @transactions = ::VirtualAccountant::Transaction
+    end
     case transaction_params[:grouping]
     when 'year'
       @transactions = @transactions.group_by_year(&:transaction_date)
@@ -17,8 +22,9 @@ class Admin::VirtualAccountant::TransactionsController < AdminController
     when 'hour'
       @transactions = @transactions.group_by_hour(&:transaction_date)
     else
-      @transactions = @transactions.group_by_month(&:transaction_date)
+      @transactions = @transactions.limit(transaction_params[:limit] || @@default_limit)
     end
+
     render json: @transactions
   end
 

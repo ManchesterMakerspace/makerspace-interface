@@ -26,8 +26,8 @@ Rails.application.routes.draw do
         resources :rentals, only: [:create, :update, :destroy]
         resources :members, only: [:create, :update]
         namespace :virtual_accountant do
-          get 'transactions', to: "transactions#charts"
-          get 'categories', to: "categories#charts"
+          resources :transactions, only: [:index]
+          resources :categories, only: [:index]
         end
       end
     end

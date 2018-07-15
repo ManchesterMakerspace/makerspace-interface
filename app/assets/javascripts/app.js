@@ -220,5 +220,13 @@ var app = angular.module('app', [
     .state('root.admin.analytics', {
       url: '/analytics',
       component: 'analyticsComponent'
+    })
+    .state('root.admin.analytics.charts', {
+      url: '/charts',
+      component: 'chartsComponent'
+    })
+    .state('root.admin.analytics.tables', {
+      url: '/tables',
+      component: 'tablesComponent'
     });
 });

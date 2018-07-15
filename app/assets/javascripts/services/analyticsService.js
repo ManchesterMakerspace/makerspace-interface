@@ -1,6 +1,7 @@
 app.factory('analyticsService', function($http){
   var categoriesPath = "/api/admin/virtual_accountant/categories";
   var transactionsPath = "/api/admin/virtual_accountant/transactions";
+
   var assembleGetParams = function (params) {
     var url = "";
     if (Object.keys(params)) {
@@ -44,6 +45,6 @@ app.factory('analyticsService', function($http){
 
   return {
     getTransactions: getTransactions,
-    getCategories: getCategories
+    getCategories: getCategories,
   };
 });

@@ -1,0 +1,29 @@
+<div class="row">
+  <div class="col-xs-12">
+    <div class="row">
+      <div class="col-xs-3">
+        Category filter
+      </div>
+      <div class="col-xs-3">
+
+      </div>
+      <div class="col-xs-3">
+
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-12">
+		<table class="table table-bordered table-striped">
+			<thead>
+				<tr>
+					<th ng-repeat="column in transactionTableCtrl.columns" ng-click="column.sort(column)" ng-bind="column.header"></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr class="transaction-row" ng-repeat="transaction in transactionTableCtrl.transactions | orderBy : transactionTableCtrl.sortBy : transactionTableCtrl.reverseSort | filter: transactionTableCtrl.filter ">
+          <th ng-repeat="column in transactionTableCtrl.columns" ng-bind="column.body(transaction)"></th>
+				</tr>
+			</tbody>
+		</table>
+  </div>
+</div>
