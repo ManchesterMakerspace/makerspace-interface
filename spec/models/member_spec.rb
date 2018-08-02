@@ -36,7 +36,6 @@ RSpec.describe Member, type: :model do
   end
 
   context "callbacks" do
-    it { expect(member).to callback(:update_allowed_workshops).before(:save) }
     it { expect(member).to callback(:verify_group_expiry).after(:initialize) }
     it { expect(member).to callback(:update_card).after(:update) }
   end
