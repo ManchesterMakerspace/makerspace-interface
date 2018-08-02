@@ -8,14 +8,11 @@ app.component('registerComponent', {
   }
 });
 
-function registerController(Auth, $state, slackService, alertService, $timeout, calendarService, tokenService) {
+function registerController(Auth, $state, slackService, alertService, $timeout, tokenService) {
   var registerCtrl = this;
   registerCtrl.$onInit = function() {
     tokenService.getDocuments().then(function(response){
       registerCtrl.documents = response;
-    });
-    calendarService.getOrientationTimes().then(function(response){
-      registerCtrl.availableTimeSlots = response;
     });
     registerCtrl.step = 0;
     registerCtrl.signedContact = false;
@@ -47,18 +44,6 @@ function registerController(Auth, $state, slackService, alertService, $timeout, 
     }).catch(function(err){
       console.log(err);
       alertService.addAlert('Error registering. Please contact amanda.lambert@manchestermakerspace.org!', 'danger', 8000);
-    });
-  };
-
-  registerCtrl.selectTimeslot = function(){
-    if(!registerCtrl.timeSlot) {return;}
-    var details = {
-      event: registerCtrl.timeSlot,
-      attendee: {email: registerCtrl.registerForm.email}
-    };
-    calendarService.assignOrientation(details).then(function(){
-      alertService.addAlert('Orientation Confirmed!', 'success');
-      $state.go('root.members');
     });
   };
 

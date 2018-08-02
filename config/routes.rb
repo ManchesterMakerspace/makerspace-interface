@@ -10,7 +10,6 @@ Rails.application.routes.draw do
     resources :token, only: [:create]
     post '/token/:id/:token', to: 'token#validate'
     resources :rentals, only: [:index]
-    resources :calendar, only: [:index, :update]
 
     devise_for :members, skip: [:registrations]
     devise_scope :member do
