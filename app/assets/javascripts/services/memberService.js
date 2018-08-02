@@ -4,10 +4,6 @@ app.factory('memberService', function($http, slackService){
     var url = '/api/members' + (search ? ("?search=" + search) : "");
     return $http.get(url).then(function(response){
       var members = response.data.map(function(member){
-        member.allowedWorkshops = member.allowed_workshops.map(function(shop){
-          return shop.name;
-        }).join(", ");
-        delete member.allowed_workshops;
         member.expirationTime = new Date(member.expirationTime);
         return member;
       });
