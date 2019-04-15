@@ -47,7 +47,7 @@ class Member
   before_update :update_initial_expiration_from_invoice, :if => proc { !cardID && cardID_changed? }
   before_save :update_braintree_customer_info
   after_update :update_card
-  after_create :send_slack_invite, :send_google_invite, :send_member_registered_email
+  after_create :send_slack_invite, :send_google_invite
 
   has_many :permissions, class_name: 'Permission', dependent: :destroy, :autosave => true
   has_many :rentals, class_name: 'Rental'
@@ -55,6 +55,7 @@ class Member
   has_many :access_cards, class_name: "Card", inverse_of: :member
   belongs_to :group, class_name: "Group", inverse_of: :active_members, optional: true, primary_key: 'groupName', foreign_key: "groupName"
   has_one :group, class_name: "Group", inverse_of: :member
+  has_one :earned_membership, class_name: 'EarnedMembership', dependent: :destroy
 
   def self.search_members(searchTerms, criteria = Mongoid::Criteria.new(Member))
     members = criteria.where(email: searchTerms)
@@ -173,9 +174,5 @@ class Member
     rescue Error::Google::Upload => err
       send_slack_message("Error sharing Member Resources folder with #{self.fullname}. Error: #{err}")
     end
-  end
-
-  def send_member_registered_email
-    MemberMailer.member_registered(self).deliver_now
   end
 end

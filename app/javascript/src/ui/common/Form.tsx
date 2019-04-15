@@ -59,14 +59,19 @@ class Form extends React.Component<FormModalProps, State> {
       // Get input name
       const formInput = this.getFormInput(input);
       if (formInput) {
-        const val = formInput.props.hasOwnProperty("checked") ? formInput.props.checked : formInput.props.value || formInput.props.defaultValue || "";
-        values[formInput.props.name] = val;
+        if (values[formInput.props.name] === undefined) {
+          const val = formInput.props.hasOwnProperty("checked") ? (formInput.props.checked ? "true" : "")
+            : (formInput.props.value !== undefined && formInput.props.value) ||
+              (formInput.props.defaultValue !== undefined && formInput.props.defaultValue) ||
+              "";
+          values[formInput.props.name] = val;
+        }
       }
       // extract names from input children elements
       if (React.Children.count(input.props.children) > 0) {
         values = {
           ...values,
-          ...this.extractNamesFromChildren(input.props.children)
+          ...this.extractNamesFromChildren(input.props.children, values)
         }
       }
     }
@@ -74,15 +79,15 @@ class Form extends React.Component<FormModalProps, State> {
     return values;
   }
 
-  private extractNamesFromChildren = (children: React.ReactNode) => {
-    return React.Children.toArray(children).reduce(this.extractInputNames, {});
+  private extractNamesFromChildren = (children: React.ReactNode, values: CollectionOf<string> = {}) => {
+    return React.Children.toArray(children).reduce(this.extractInputNames, values);
   }
 
   /**
    * Set values to collection of strings by input name
    */
-  private getDefaultState = (props: FormModalProps): State => {
-    const defaultValues = this.extractNamesFromChildren(props.children);
+  private getDefaultState = (props: FormModalProps, resetState?: boolean): State => {
+    const defaultValues = this.extractNamesFromChildren(props.children, resetState ? {} : (this.state || {} as State).values);
 
     return (
       {
@@ -104,7 +109,19 @@ class Form extends React.Component<FormModalProps, State> {
   }
 
   public resetForm = () => {
-    this.setState({ ...this.getDefaultState(this.props) });
+    this.setState(state => {
+      const defaultState = this.getDefaultState(this.props, true);
+      const oldValues = state.values;
+      const values = Object.entries(defaultState.values).reduce((values, [key, val]) => {
+        const oldVal = oldValues[key];
+        values[key] = oldVal || val;
+        return values;
+      }, {})
+     return {
+       ...defaultState,
+       values
+      };
+    });
   }
 
   public getValues = (): CollectionOf<string> => {
@@ -127,8 +144,12 @@ class Form extends React.Component<FormModalProps, State> {
   public setError = (fieldName: string, error: string) => {
     return new Promise((resolve) => this.setState(state => ({
       errors: {
-        ...state.errors,
-        [fieldName]: isUndefined(error) ? null : error
+        ...isUndefined(error) ? {
+          ...omit(state.errors, [fieldName])
+        } : {
+            ...state.errors,
+            [fieldName]: error
+        }
       }
     }), resolve))
   }
@@ -141,8 +162,14 @@ class Form extends React.Component<FormModalProps, State> {
     return this.state.isDirty;
   }
 
+  public getErrors = () => {
+    return this.state.errors;
+  }
+
   public simpleValidate = async <T extends object>(fields: FormFields) => {
-    const values = this.getValues();
+    const values = {
+      ...this.getValues()
+    };
     const errors: CollectionOf<string> = {};
     const validatedForm: Partial<T> = {};
     Object.entries(fields).forEach(([key, field]) => {
@@ -174,29 +201,32 @@ class Form extends React.Component<FormModalProps, State> {
   );
   }
 
-  private handleChange = (event: React.ChangeEvent<HTMLFormElement>) => {
-    const fieldName = event.target.name;
-    // Set value depending on checked state for checkboxes and radios
-    const fieldValue = event.target.hasOwnProperty("checked") ? (isUndefined(event.target.value) ? !!event.target.checked : (event.target.checked && event.target.value)) : event.target.value;
-    const { isDirty } = this.state;
-    if (!isDirty) {
-      this.setState({ isDirty: true });
+  private handleChange = (inputOnChange: (event: any) => void) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event && event.target) {
+      const fieldName = event.target.name;
+      // Set value depending on checked state for checkboxes and radios
+      const fieldValue = event.target.type === "checkbox" ? (event.target.checked ? "true" : "") : event.target.value;
+      const { isDirty } = this.state;
+      if (!isDirty) {
+        this.setState({ isDirty: true });
+      }
+      this.setState((state) => {
+        return {
+          values: {
+            ...state.values,
+            [fieldName]: isUndefined(fieldValue) ? null : fieldValue as string
+          },
+          touched: {
+            ...state.touched,
+            [fieldName]: true
+          },
+          errors: {
+            ...omit(state.errors, [fieldName])
+          }
+        };
+      });
     }
-    this.setState((state) => {
-      return {
-        values: {
-          ...state.values,
-          [fieldName]: isUndefined(fieldValue) ? null : fieldValue
-        },
-        touched: {
-          ...state.touched,
-          [fieldName]: true
-        },
-        errors: {
-          ...omit(state.errors, [fieldName])
-        }
-      };
-    });
+    inputOnChange && inputOnChange(event);
   }
 
   private getFormInput = (element: ChildNode): ChildNode => {
@@ -257,18 +287,28 @@ class Form extends React.Component<FormModalProps, State> {
     );
   }
 
-  private cloneFormInput = (input: ChildNode, newChildren?: React.ReactNode) => {
+  private cloneFormInput = (input: ChildNode) => {
     const { values, errors } = this.state;
     const fieldName = input.props.name;
     const id = input.props.id || fieldName;
+    const onChange = this.handleChange(input.props.onChange);
     const error = errors[fieldName];
-    const value = values[fieldName];
+    const value = values[fieldName] || "";
+
+    const isCheckbox = input.props.hasOwnProperty("checked");
+    const baseProps = {
+      error: error ? (isCheckbox ? error : !!error) : undefined,
+      id,
+      value,
+      onChange,
+    };
+    const props: any = input.props.hasOwnProperty("control") ?
+      {
+        ...baseProps,
+        control: this.cloneFormInput(input.props.control)
+      } : baseProps;
     return (
-      React.cloneElement(input, {
-        error: error ? !!error : undefined,
-        id,
-        value
-      })
+      React.cloneElement(input, props)
     );
   }
 
@@ -302,7 +342,6 @@ class Form extends React.Component<FormModalProps, State> {
     const { id, loading, style, onSubmit, onCancel } = this.props;
     const Wrapper = (onSubmit || onCancel) && <form
       onSubmit={this.handleSubmit}
-      onChange={this.handleChange}
       noValidate
       autoComplete="off"
       id={id}

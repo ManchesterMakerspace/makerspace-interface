@@ -114,10 +114,10 @@ describe("Authentication", () => {
       expect(await utils.isElementDisplayed(memberPO.memberDetail.notificationModal));
       await utils.clickElement(memberPO.memberDetail.notificationModalSubmit);
 
-      await utils.waitForVisisble(signup.documentsSigning.codeOfConductSubmit);
+      await utils.waitForVisible(signup.documentsSigning.codeOfConductSubmit);
       await utils.clickElement(signup.documentsSigning.codeOfConductCheckbox);
       await utils.clickElement(signup.documentsSigning.codeOfConductSubmit);
-      await utils.waitForVisisble(signup.documentsSigning.memberContractCheckbox);
+      await utils.waitForVisible(signup.documentsSigning.memberContractCheckbox);
       await mock(mockRequests.member.put.ok(newMember.id, newMember)); // upload signature
       await mock(mockRequests.invoices.get.ok([membershipOption])); // Load selected invoice
       await utils.clickElement(signup.documentsSigning.memberContractCheckbox);
@@ -182,19 +182,19 @@ describe("Authentication", () => {
       await utils.clickElement(memberPO.memberDetail.notificationModalSubmit);
 
       // Signed up, code of conduct validation
-      await utils.waitForVisisble(signup.documentsSigning.codeOfConductSubmit);
+      await utils.waitForVisible(signup.documentsSigning.codeOfConductSubmit);
       await utils.clickElement(signup.documentsSigning.codeOfConductSubmit);
-      await utils.assertInputError(signup.documentsSigning.codeOfConductError, true)
+      await utils.assertInputError(signup.documentsSigning.codeOfConductCheckbox)
       await utils.clickElement(signup.documentsSigning.codeOfConductCheckbox);
-      await utils.assertNoInputError(signup.documentsSigning.codeOfConductError, true)
+      await utils.assertNoInputError(signup.documentsSigning.codeOfConductCheckbox)
       await utils.clickElement(signup.documentsSigning.codeOfConductSubmit);
 
       // Contract validation
-      await utils.waitForVisisble(signup.documentsSigning.memberContractCheckbox);
+      await utils.waitForVisible(signup.documentsSigning.memberContractCheckbox);
       await utils.clickElement(signup.documentsSigning.memberContractSubmit);
-      await utils.assertInputError(signup.documentsSigning.memberContractError, true)
+      await utils.assertInputError(signup.documentsSigning.memberContractCheckbox)
       await utils.clickElement(signup.documentsSigning.memberContractCheckbox);
-      await utils.assertNoInputError(signup.documentsSigning.memberContractError, true)
+      await utils.assertNoInputError(signup.documentsSigning.memberContractCheckbox)
       await utils.clickElement(signup.documentsSigning.memberContractSubmit);
       await utils.assertInputError(signup.documentsSigning.memberContractError, true)
       await mock(mockRequests.member.put.ok(newMember.id, newMember)); // upload signature

@@ -4,6 +4,8 @@ class Admin::MembersController < AdminController
   def create
     @member = Member.new(get_camel_case_params)
     @member.save!
+    new_member_password_token = ::Devise.token_generator.generate(Member, :reset_password_token)
+    MemberMailer.welcome_email_manual_register(@member, new_member_password_token).deliver_now
     render json: @member and return
   end
 
@@ -40,7 +42,7 @@ class Admin::MembersController < AdminController
   def notify_renewal(init)
     final = @member.expirationTime
     if (Time.at(final / 1000) - Time.at((init || 0) / 1000) > 1.day)
-      time = @member.prettyTime.strftime("%m/%d/%Y")
+      time = @member.pretty_time.strftime("%m/%d/%Y")
       @messages.push("#{@member.fullname} renewed. Now expiring #{time}")
     end
   end
