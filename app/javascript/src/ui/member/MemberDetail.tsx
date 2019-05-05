@@ -29,6 +29,7 @@ import { getDetailsForMember } from "ui/membership/constants";
 import AccessCardContainer, { CreateAccessCardProps } from "ui/accessCards/AccessCardContainer";
 import ReportList from "ui/reports/ReportList";
 import { readMembershipAction } from "ui/earnedMemberships/actions";
+import { PermissionsSelect } from "ui/permissions/PermissionsSelect";
 
 interface DispatchProps {
   getMember: () => Promise<void>;
@@ -128,7 +129,7 @@ class MemberDetail extends React.Component<Props, State> {
   private closeCardModal = () => this.setState({ isCardOpen: false });
 
   private renderMemberInfo = (): JSX.Element => {
-    const { member, billingEnabled } = this.props;
+    const { member, billingEnabled, admin } = this.props;
 
     const details = getDetailsForMember(member);
 
@@ -146,6 +147,14 @@ class MemberDetail extends React.Component<Props, State> {
         {billingEnabled && <KeyValueItem label="Membership Type">
           <span id="member-detail-type">{details.type}</span>
         </KeyValueItem>}
+        {member.id && admin && (
+          <KeyValueItem label="Permissions">
+            {/* TODO: fix styling if Will is okay with permissions select here. */}
+            <div style={{ display: "inline-block", minWidth: 500 }}>
+              <PermissionsSelect memberId={member.id} updateOnChange={true} />
+            </div>
+          </KeyValueItem>
+        )}
       </>
     )
   }

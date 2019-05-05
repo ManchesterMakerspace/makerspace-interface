@@ -101,6 +101,7 @@ export namespace Routing {
   export const Settings = "/settings";
   export const SendRegistration = `/send_registration/${PathPlaceholder.Email}`
   export const EarnedMemberships = "/earned_memberships";
+  export const Permissions = "/permissions";
 }
 
 export enum ApiErrorStatus {

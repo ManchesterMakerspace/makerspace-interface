@@ -14,7 +14,7 @@ import Form from "ui/common/Form";
 import { reportRequirementFields, formPrefix } from "ui/reports/constants";
 import ButtonRow, { ActionButton } from "ui/common/ButtonRow";
 import { mapValues } from "lodash-es";
-import AsyncSelectFixed from "ui/common/AsyncSelect";
+import { AsyncCreatableSelect } from "ui/common/AsyncSelect";
 import { Select } from "@material-ui/core";
 
 interface OwnProps {
@@ -58,7 +58,6 @@ class ReportRequirementFieldset extends React.Component<OwnProps, State> {
               if (member && this.state.loadingMembersRequestId === requestId) {
                 const option = { value: member.id, label: `${member.firstname} ${member.lastname}`, id: member.id }
                 const fieldName = this.getMemberInputName(index);
-                console.log(fieldName, option);
                 this.formRef && await this.formRef.setValue(fieldName, option);
               }
             } catch (e) {
@@ -193,9 +192,12 @@ class ReportRequirementFieldset extends React.Component<OwnProps, State> {
     return (
       <Grid item xs={12}>
         <FormLabel component="legend">{fields.memberId.label}</FormLabel>
-        <AsyncSelectFixed
+        {/**
+          * When viewing report, this does not render "createable" (members that don't actually exist, but were created:
+          * what is value of having creatable here?
+          */}
+        <AsyncCreatableSelect
           isClearable
-          createable={true}
           name={fieldName}
           placeholder={fields.memberId.placeholder}
           id={fieldName}
