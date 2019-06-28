@@ -1,24 +1,27 @@
 class Billing::SubscriptionsController < BillingController
     include FastQuery
     include BraintreeGateway
-    before_action :verify_own_subscription
+    before_action :verify_customer, :verify_own_subscription
 
   def show
     subscription = ::BraintreeService::Subscription.get_subscription(@gateway, params[:id])
-    render json: subscription, serializer: Braintree::SubscriptionSerializer, root: "subscription" and return
+    render json: subscription, serializer: BraintreeService::SubscriptionSerializer, root: "subscription" and return
   end
 
   def update
     # 2 different types of updates (payment method or plan)
-    result = ::BraintreeService::Subscription.update(@gateway, subscription_params)
-    raise Error::Braintree::Result.new(result) unless result.success?
-    render json: subscription, serializer: Braintree::SubscriptionSerializer, root: "subscription" and return
+    subscription_update = {
+      id: params[:id],
+      payment_method_token: subscription_params[:payment_method_token]
+    }
+    subscription = ::BraintreeService::Subscription.update(@gateway, subscription_update)
+    render json: subscription, serializer: BraintreeService::SubscriptionSerializer, root: "subscription" and return
   end
 
   def destroy
-    result = ::BraintreeService::Subscription.cancel(@gateway, subscription_params[:id])
-    raise Error::Braintree::Result.new(result) unless result.success?
+    result = ::BraintreeService::Subscription.cancel(@gateway, params[:id])
     @subscription_resource.remove_subscription()
+    # TODO: Email should be sent when email cancelled
     render json: {}, status: 204 and return
   end
 
@@ -28,8 +31,11 @@ class Billing::SubscriptionsController < BillingController
   end
 
   def verify_own_subscription
-    subscription_id = params[:id] || subscription_params[:id]
-    @subscription_resource = current_member.find_subscribed_resource(subscription_id)
+    @subscription_resource = current_member.find_subscribed_resource(params[:id])
     raise Error::NotFound.new if @subscription_resource.nil?
+  end
+
+  def verify_customer
+    raise Error::Braintree::MissingCustomer.new unless current_member.customer_id
   end
 end
