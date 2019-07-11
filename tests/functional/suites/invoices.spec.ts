@@ -92,7 +92,7 @@ describe("Invoicing and Dues", () => {
       await utils.waitForPageLoad(memberPO.getProfilePath(basicUser.id));
     });
   });
-  describe("Admin User", () => {
+  xdescribe("Admin User", () => {
     const targetUrl = memberPO.getProfilePath(basicUser.id);
     const loadInvoices = async (invoices: Invoice[], login?: boolean) => {
       await mock(mockRequests.invoices.get.ok(invoices, { order: SortDirection.Asc, resourceId: basicUser.id }, true));
