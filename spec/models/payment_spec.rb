@@ -64,5 +64,12 @@ RSpec.describe Payment, type: :model do
       member.reload
       expect(member.subscription).to be_falsey
     end
+
+    it "Doesn't throw errors on special characters" do 
+      member = create(:member, firstname: "Test", lastname: 'Member')
+      name_payment = create(:payment, :sub_payment, firstname: ";'+_.,*&^%$#@![]-", lastname: ')(*{}=1af~1"')
+      name_payment.reload
+      expect(name_payment.member).to eq(member)
+    end
   end
 end

@@ -12,7 +12,7 @@ import header from "../../pageObjects/header";
 import memberPO from "../../pageObjects/member";
 import { autoLogin } from "../autoLogin";
 
-describe("Earned Memberships", () => {
+xdescribe("Earned Memberships", () => {
   describe("Admin user", () => {
     describe("From list view", () => {
       const firstMembership: EarnedMembership = {
