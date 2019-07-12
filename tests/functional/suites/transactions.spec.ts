@@ -11,7 +11,7 @@ import { timeToDate } from "ui/utils/timeToDate";
 import { numberAsCurrency } from "ui/utils/numberAsCurrency";
 import { autoLogin } from "../autoLogin";
 
-xdescribe("Transactions", () => {
+describe("Transactions", () => {
   describe("Basic user", () => {
     const customer = {
       ...basicUser,

@@ -16,7 +16,7 @@ const verifyRouting = async (member: LoginMember) => {
   await utils.waitForPageLoad(memberPo.getProfilePath(id));
 }
 
-describe("Members page", () => {
+xdescribe("Members page", () => {
   describe("Basic User", () => {
     beforeEach(() => {
       return autoLogin(basicUser).then(async () => {
