@@ -43,10 +43,9 @@ class Admin::MembersController < AdminController
     final = @member.expirationTime
     # Check if adding expiration too
     if final &&
-        (init.nil? || 
+        (init.nil? ||
         (Time.at(final / 1000) - Time.at((init || 0) / 1000) > 1.day))
-      time = @member.pretty_time.strftime("%m/%d/%Y")
-      @messages.push("#{@member.fullname} renewed. Now expiring #{time}")
+      @messages.push(@member.get_renewal_slack_message)
     end
   end
 

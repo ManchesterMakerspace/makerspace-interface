@@ -1,6 +1,20 @@
 # Use this hook to configure devise mailer, warden hooks and so forth.
 # Many of these configuration options can be set straight in your model.
 Devise.setup do |config|
+
+  # Reload the factories in dev only if env var set
+  if (ENV["TEST_MAIL"] && Rails.env.development?)
+    ActionDispatch::Callbacks.before do
+      FactoryBot.definition_file_paths = [Rails.root.join('spec', 'support', 'factories')]
+
+      # first init will load factories, this should only run on subsequent reloads
+      unless FactoryBot.factories.blank?
+        FactoryBot.factories.clear
+        FactoryBot.sequences.clear
+        FactoryBot.find_definitions
+      end
+    end
+  end
   # The secret key used by Devise. Devise uses this key to generate
   # random tokens. Changing this key will render invalid all existing
   # confirmation, reset password and unlock tokens in the database.

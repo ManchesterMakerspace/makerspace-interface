@@ -10,7 +10,7 @@ class Admin::InvoicesController < AdminController
   end
 
   def create
-    if invoice_option_params
+    if params['invoice_option']
       raise ActionController::ParameterMissing.new(:id) if invoice_option_params[:id].nil?
       raise ActionController::ParameterMissing.new(:member_id) if invoice_option_params[:member_id].nil?
       member = Member.find(invoice_option_params[:member_id])
@@ -32,6 +32,7 @@ class Admin::InvoicesController < AdminController
   end
 
   def update
+    # TODO this should be handled by the model not controller
     if !!invoice_params[:settled] && !@invoice.settled
       @invoice.settle_invoice
     else
@@ -42,12 +43,21 @@ class Admin::InvoicesController < AdminController
 
   def destroy
     @invoice.delete
-    render json: @invoice and return
+    render json: {}, status: 204 and return
   end
 
   private
   def invoice_params
-    params.require(:invoice).permit(:description, :items, :settled, :amount, :payment_type, :resource_id, :resource_class, :due_date, :member_id)
+    params.require(:invoice).permit(:description, 
+                                    :items, 
+                                    :settled, 
+                                    :amount, 
+                                    :quantity,
+                                    :payment_type, 
+                                    :resource_id, 
+                                    :resource_class, 
+                                    :due_date, 
+                                    :member_id)
   end
 
   def invoice_option_params

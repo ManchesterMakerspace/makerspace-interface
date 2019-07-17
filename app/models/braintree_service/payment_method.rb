@@ -19,6 +19,10 @@ class BraintreeService::PaymentMethod < Braintree::PaymentMethodNonce
     gateway.payment_method.delete(payment_method_id, { revoke_all_grants: true })
   end
 
+  def self.new(gateway, args)
+    super(gateway, args)
+  end
+
   private
   def self.normalize_payment_method(gateway, payment_method)
     if payment_method.kind_of?(Braintree::CreditCard)
@@ -26,6 +30,6 @@ class BraintreeService::PaymentMethod < Braintree::PaymentMethodNonce
     elsif payment_method.kind_of?(Braintree::PayPalAccount)
       normalized_payment_method = ::BraintreeService::PaypalAccount._new(gateway, instance_to_hash(payment_method))
     end
-    normalized_payment_method
+    normalized_payment_method ||= payment_method
   end
 end
